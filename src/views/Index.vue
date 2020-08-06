@@ -14,7 +14,7 @@
         <div class="page-head-user-info">
           <div class="page-head-user-info-hello">你好, {{ username }}</div>
           <div class="each-page-head-function">修改用户信息</div>
-          <div class="each-page-head-function">退出</div>
+          <div class="each-page-head-function" @click="logout">退出</div>
         </div>
         </div>
     </div>
@@ -27,9 +27,9 @@
         <span class="iconfont icon-zuo yincang" v-bind:class="{ noShowNavYincang: isShowNav }"></span>
       </div>
     </div>
-    <keep-alive>
+    <!-- <keep-alive> -->
       <router-view class="page-right-content" v-bind:class="{ noShowNavRightContent: isShowNav }"></router-view>
-    </keep-alive>
+    <!-- </keep-alive> -->
   </div>
 </template>
 
@@ -98,6 +98,13 @@ export default {
         this.$router.replace('/')
       }
       event.stopPropagation();
+    },
+
+    // 退出登录
+    logout: function () {
+      this.$PUBILC.clearVuex(this);
+      this.$PUBILC.clearSession(this);
+      this.$router.replace('/login');
     }
   }
 }
