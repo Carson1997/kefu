@@ -44,7 +44,18 @@ export default {
     },
 
     leftNav: function () { // 左侧导航数据
-      return this.$store.state.PAGE_LEFT_NAV;
+      let arr = [];
+      let auth = JSON.parse(JSON.stringify(this.$store.state.USER_AUTHORITY)).split(',');
+      let navs = JSON.parse(JSON.stringify(this.$store.state.PAGE_LEFT_NAV));
+      for (let i in navs) {
+        if (auth.indexOf(navs[i].index) > -1) {
+          arr.push(navs[i]);
+        }
+      }
+      if (this.$store.state.USER_STATUS >= 3) {
+        arr.push(navs['/setting']);
+      }
+      return arr;
     },
 
     username: function () { // 用户名

@@ -1,7 +1,7 @@
 <template>
   <div class="setting" id="setting">
     <div class="module-head">
-      <div class="each-module-head" v-for="(item, index) in moduleFunctions" :key="index" @click="changeFunction(item.url)" v-bind:class="{'active': item.url == nowFunction}"> {{ item.name }} </div>
+      <div class="each-module-head" v-for="(item, index) in moduleFunctionsShow" :key="index" @click="changeFunction(item.url)" v-bind:class="{'active': item.url == nowFunction}"> {{ item.name }} </div>
     </div>
     <router-view class="module-detail"></router-view>
   </div>
@@ -14,13 +14,26 @@ export default {
   data: function () {
     return {
       moduleFunctions: [ // 所有功能
-        { url: 'groupSetting', name: '群组设置' },
-        { url: 'userSetting', name: '用户设置' },
-        { url: 'productSetting', name: '产品分类' },
-        { url: 'noticeSetting', name: '公告分类' },
-        { url: 'projectSetting', name: '项目设置' },
+        { url: 'groupSetting', name: '群组设置', status: 3 },
+        { url: 'userSetting', name: '用户设置', status: 3 },
+        { url: 'productSetting', name: '产品分类', status: 3 },
+        { url: 'noticeSetting', name: '公告分类', status: 3 },
+        { url: 'projectSetting', name: '项目设置', status: 4 },
       ],
       nowFunction: '', // 当前的功能点
+    }
+  },
+
+  computed: {
+    status: function () { // 用户权限
+      return this.$store.state.USER_STATUS
+    },
+
+    moduleFunctionsShow: function () { // 显示的功能点
+      let arr = this.moduleFunctions.filter(item => {
+        return item.status == this.status;
+      })
+      return arr;
     }
   },
 
