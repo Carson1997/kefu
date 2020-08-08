@@ -74,15 +74,20 @@ export default {
       let fileFolderData = this.fileFolderData
       let _this = this;
       let searchInput = searchData.searchInput;
-      let searchArr = [];
-      for(let i in fileFolderData) {
-        if (fileFolderData[i].name.indexOf(searchInput) > -1) {
-          let arr = _this.getPath(fileFolderData[i]);
-          searchArr.push({ id: fileFolderData[i].id, name: fileFolderData[i].name, path: arr, fileType: fileFolderData[i].fileType });
-        }
-      }
       this.searchInput = searchInput;
-      this.fileData = searchArr.length == 0 ? undefined : searchArr;
+      let searchArr = [];
+      if (searchInput == '') {
+        this.switchFolder({ path: ['全部文件'] });
+      } else {
+        for(let i in fileFolderData) {
+          if (fileFolderData[i].name.indexOf(searchInput) > -1) {
+            let arr = _this.getPath(fileFolderData[i]);
+            searchArr.push({ id: fileFolderData[i].id, name: fileFolderData[i].name, path: arr, fileType: fileFolderData[i].fileType });
+          }
+        }
+        this.filePathData = ['全部文件 (搜索:' + searchInput + ')'];
+        this.fileData = searchArr;
+      }
     },
 
     // 搜索时寻找文件的路径
@@ -103,17 +108,21 @@ export default {
 
     // 根据路径取得文件夹的内容
     switchFolder: function (data) {
-      this.searchInput = '';
-      let path = data.path;
-      let obj = this.fileFolderLevelData;
-      for (let i in path) {
-        obj = obj[path[i]]['children'] == undefined ? {} : obj[path[i]]['children'];
+      if (this.searchInput != '') {
+        this.$alert('当前已是搜索' + this.searchInput + '的列表', '标题名称', {confirmButtonText: '确定', callback: action => {}});
+      } else {
+        this.searchInput = '';
+        let path = data.path;
+        let obj = this.fileFolderLevelData;
+        for (let i in path) {
+          obj = obj[path[i]]['children'] == undefined ? {} : obj[path[i]]['children'];
+        }
+        for (let i in obj) {
+          obj[i]['path'] = path;
+        }
+        this.fileData = Object.keys(obj).length == 0 ? undefined : JSON.parse(JSON.stringify(obj));
+        this.filePathData = path;
       }
-      for (let i in obj) {
-        obj[i]['path'] = path;
-      }
-      this.fileData = Object.keys(obj).length == 0 ? undefined : obj;
-      this.filePathData = path;
     },
 
     // 新建文件夹

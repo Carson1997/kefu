@@ -2,9 +2,9 @@
 <template>
   <div class="file-control-component">
     <el-button type="primary" size="small" class="left" v-if="fileControlAuth == true" @click="newFolder">新建文件夹</el-button>
-    <el-input class="search-input" v-model="searchInput" placeholder="请输入文件名搜索">
+    <el-input class="search-input" v-model="searchInput" placeholder="请输入文件名搜索" @input="search">
       <template slot="append">
-        <el-button icon="el-icon-search" circle @click="search"></el-button>
+        <span class="el-icon-search"></span>
       </template>
     </el-input>
     <div class="clear"></div>
