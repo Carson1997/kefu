@@ -75,16 +75,16 @@ export default {
       this.$store.commit('changeNowSecDialog', 'newUser');
     },
 
-    // 删除用户
+    // 冻结用户
     frozenUser: function (data) {
       let prison = data.prison == 1 ? 0 : 1;
       let send = { shop_id: this.projectId, user_id: data.id, prison: prison };
       this.$NORMAL_POST(this.$INTERFACE.FROZEN_USER, send).then(this.deleteUserPromise);
     },
 
-    // 删除用户 请求后的处理函数
+    // 冻结用户 请求后的处理函数
     deleteUserPromise: function (res) {
-      this.$message({ type: 'success', message: '删除成功' });
+      this.$message({ type: 'success', message: '操作成功' });
       this.getSuperUsers();
     },
   }
