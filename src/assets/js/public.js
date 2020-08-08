@@ -59,9 +59,13 @@ var Pubilc = {
 
   // 将数组递归成父子级别的形式
   changeArrToHierarchy: function (data) {
+    let all = {};
+    let returnObj = {}
 		let parents = data.filter(value => {
+      all[value['id']] = JSON.parse(JSON.stringify(value)); 
 			value['label'] = value['name'];
-			value['value'] = value['id'];
+      value['value'] = value['id'];
+      value['path'] = ['全部文件'];
 			return value.fid == 0;
 		})
 		let children = data.filter(value => {
@@ -73,14 +77,22 @@ var Pubilc = {
 					if (current.fid === parent.id) {
 						let temp = JSON.parse(JSON.stringify(children));
 						temp.splice(index, 1);
-						find([current], temp)
-						typeof parent.children !== 'undefined' ? parent.children.push(current) : parent.children = [current];
+            find([current], temp);
+            let attr = current['name'];
+            typeof parent.children !== 'undefined' ? '' : parent.children = {};
+            parent.children[attr] = current;
 					}
 				});
 			})
 		}
-		find(parents, children);
-		return parents;
+    find(parents, children);
+    for (let i in parents) {
+      returnObj[parents[i]['name']] = parents[i];
+    }
+		return {
+      returnObj: returnObj,
+      all: all
+    };
   }
 }
 

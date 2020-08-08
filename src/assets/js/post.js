@@ -30,9 +30,9 @@ var Request = {
           resolve(res.data);
         }
         filterRes(res.data);
-      }).catch(
-
-      );
+      }).catch(function (error) {
+        alert(error)
+      });
     })
     
   }

@@ -115,7 +115,8 @@ export default {
 
     // 获取权限
     getAuth: function () {
-      this.$NORMAL_POST(this.$INTERFACE.ALL_MODULE_AUTH).then(this.getAuthPromise);
+      let send = { 'shop_id': this.projectId };
+      this.$NORMAL_POST(this.$INTERFACE.ALL_MODULE_AUTH, send).then(this.getAuthPromise);
     },
 
     // 获取权限  请求后的处理函数
@@ -179,7 +180,7 @@ export default {
           send['shop_id'] = this.projectId;
           send['status'] = 3;
         }
-        if (Object.keys(this.userData).length > 0) {
+        if (this.userData != undefined && Object.keys(this.userData).length > 0) {
           send['user_id'] = this.userData['id']
         }
         this.$NORMAL_POST(this.$INTERFACE.NEW_USER, send).then(this.addUserPromise);
