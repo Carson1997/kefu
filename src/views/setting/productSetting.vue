@@ -1,6 +1,6 @@
 <template>
   <div id="productSetting">
-    <fileFolderComponent class="product-file" @exposeToBusiness="exposeToBusiness" :fileFolderData="fileFolderData" :fileControlAuth="fileControlAuth"></fileFolderComponent>
+    <fileFolderComponent class="product-file" :fileData="fileData" @exposeToBusiness="exposeToBusiness"></fileFolderComponent>
   </div>
 </template>
 
@@ -13,8 +13,7 @@ export default {
 
   data: function () {
     return {
-      fileFolderData: [],
-      fileControlAuth: true // 文件夹操作权限
+      fileData: [], // 文件数据
     }
   },
 
@@ -31,22 +30,23 @@ export default {
 
     // 获取表格数据  请求的处理函数
     getTableDataPromise: function (res) {
-      this.fileFolderData = res.data;
+      this.fileData = res.data;
     },
 
     // 文件夹的业务逻辑
     exposeToBusiness: function (data) {
       let order = data.order;
       let send = data.data;
-      if (order == 'newFolder') {
+      if (order == 'new_folder') {
         this.newProductCate(send);
-      } else if (order == 'deleteFolder') {
+      } else if (order == 'delete_file') {
         this.deleteProductCate(send);
       }
     },
 
     // 新增产品分类
     newProductCate: function (send) {
+      send['file_type'] = 0;
       this.$NORMAL_POST(this.$INTERFACE.NEW_PRODUCT_CATEGORY, send).then(this.operateFolderPromise);
     },
 

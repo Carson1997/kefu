@@ -2,12 +2,14 @@
   <div class="file-folder-component">
     <filePathComponent @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
     <fileShowComponent @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
+    <newfileDialog @closeHandle="closeHandle" @newFolderApply="newFolderApply" v-if="newfileDialog" :nowFile="fileShowData" :editFileData="editFileData"></newfileDialog>
   </div>
 </template>
 
 <script>
 import filePathComponent from '../../components/file/filePathComponent';
 import fileShowComponent from '../../components/file/fileShowComponent';
+import newfileDialog from '../../components/newFileDetail/newfileDialog';
 export default {
   name: 'fileFolderComponent',
 
@@ -18,7 +20,7 @@ export default {
     }
   },
 
-  components: { filePathComponent, fileShowComponent },
+  components: { filePathComponent, fileShowComponent, newfileDialog },
 
   watch: {
     fileData: function () {
@@ -33,6 +35,8 @@ export default {
       fileDataObj: {}, // 文件层级数据
       allName: '全部文件', // 全部文件的名称
       fatherSearchInput: '', // 文件夹搜索的文字
+      newfileDialog: false, // 新建文件框是否显示
+      editFileData: '', // 目前修改的数据
     }
   },
 
@@ -121,25 +125,15 @@ export default {
 
     // 编辑或者新建文件夹
     newFolder: function (data) {
-      let id = data == undefined ? undefined : data.id;
-      let value = data == undefined ? undefined : data.value;
-      this.promptBox('文件夹名称', id, value, this.fileNameCheck)
+      this.newfileDialog = true;
+      this.$store.commit('changeNowDialog', 'newfileDialog');
+      this.editFileData = data;
     },
 
-    // 弹出输入提示框
-    promptBox: function (title, id, value, callback) {
-      this.$prompt('请输入' + title, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValue: value,
-      }).then(function (value) {
-        callback(id, value.value)
-      }).catch();
-    },
-
-    // 提示弹框
-    alertBox: function (content) {
-      this.$alert(content, '提示', { confirmButtonText: '确定' })
+    // 关闭新建对话框
+    closeHandle: function () {
+      this.newfileDialog = false;
+      this.editFileData = '';
     },
 
     // 确认弹框
@@ -153,28 +147,18 @@ export default {
       }).catch(function () {});
     },
 
-    // 文件名检测
-    fileNameCheck: function (id, value) {
-      for (let i in this.fileShowData) {
-        if (this.fileShowData[i]['name'] == value) {
-          this.alertBox('该文件夹下存在同名文件或者文件夹');
-          return false;
-        }
-      }
-      this.newFolderApply(id, value);
-    },
-
     // 申请新建编辑文件夹
-    newFolderApply: function (id, name) {
+    newFolderApply: function (data) {
       let path = JSON.parse(JSON.stringify(this.filePath));
       let fid = this.findFile(path).fid;
       fid = fid == undefined ? 0 : fid;
       path = path.split('/');
       path.splice(0, 1, '');
-      path.push(name);
+      path.push(data.name);
       path = path.join('/');
-      let send = { id: id, name: name, path: path, fid: fid };
-      this.exposeToBusiness('new_folder', send)
+      data['path'] = path;
+      let order = data.file_type == '' ? 'new_folder' : 'new_file';
+      this.exposeToBusiness(order, data);
     },
 
     // 删除文件

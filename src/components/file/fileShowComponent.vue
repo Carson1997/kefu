@@ -9,7 +9,13 @@
       </div>
       <div class="body">
         <div class="each-file" v-for="item in fileShowData" :key="item.id">
-          <div class="each-file-part name"><span class="file-cursor" @click="switchFile('next', item)">{{ item.name }}</span></div>
+          <div class="each-file-part name">
+            <div class="img-sign">
+              <img src="../../../public/img/folder.png" v-if="item.file_type == 0">
+              <img src="../../../public/img/file.png" v-if="item.file_type == 1">
+            </div>
+            <span class="file-cursor" @click="switchFile('next', item)">{{ item.name }}</span>
+          </div>
           <div class="each-file-part path"><span class="file-cursor" @click="switchFile('pre', item)">{{ item.path[item.path.length - 2] }}</span></div>
           <div class="each-file-part operation">
             <el-button type="primary" size="mini" plain @click="editFileName(item)">重命名</el-button>
@@ -55,7 +61,7 @@ export default {
 
     // 重命名文件夹
     editFileName: function (data) {
-      this.$emit('newFolder', { id: data.id, value: data.name });
+      this.$emit('newFolder', { id: data.id, name: data.name, authority: data.authority, grouping: data.grouping == null ? [] : data.grouping.split(','), file_type: 0 });
     },
 
     // 删除文件夹
@@ -153,5 +159,13 @@ export default {
 .no-file-intro p {
   padding: 20px;
   color: #727272;
+}
+
+.img-sign {
+  margin-right: 15px;
+  height: 45px;
+  display: flex;
+  float: left;
+  align-items: center;
 }
 </style>

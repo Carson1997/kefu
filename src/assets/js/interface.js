@@ -31,12 +31,11 @@ var Interface = {
   FROZEN_USER: REQUEST_URL + '/user/del_user/', // 冻结用户
   ALL_ROLE: REQUEST_URL + '/user/group_ing', // 角色
   ALL_CATEGORY: REQUEST_URL + '/Content/category', // 所有知识库分类
-  NEW_CATEGORY: REQUEST_URL + '/Content/category_add_update', // 添加知识库分类
+  NEW_CATEGORY: REQUEST_URL + '/Content/category_add_update', // 添加知识库文件夹或者文件
   DELETE_CATEGORY: REQUEST_URL + '/Content/category_del', // 删除知识库分类
   ALL_PRODUCT_CATEGORY: REQUEST_URL + '/Product/Product_cat', // 所有产品分类
   NEW_PRODUCT_CATEGORY: REQUEST_URL+ '/Product/cat_add_update', // 添加产品分类
   DEL_PRODUCT_CATEGORY: REQUEST_URL + '/Product/cat_del', // 删除产品分类
-
 
   // ******************* 设置模块的接口 *****************************************
 

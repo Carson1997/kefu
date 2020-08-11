@@ -47,6 +47,7 @@ export default {
 
     // 新建知识库分类
     newNotice: function (send) {
+      send['file_type'] = 0;
       this.$NORMAL_POST(this.$INTERFACE.NEW_CATEGORY, send).then(this.editHandle);
     },
 
