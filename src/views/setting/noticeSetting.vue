@@ -1,6 +1,6 @@
 <template>
   <div id="noticeSetting">
-    <fileFolderComponent class="notice-file" @exposeToBusiness="exposeToBusiness" :fileFolderData="fileFolderData" :fileControlAuth="fileControlAuth"></fileFolderComponent>
+    <fileFolderComponent class="notice-setting" :fileData="fileData" @exposeToBusiness="exposeToBusiness"></fileFolderComponent>
   </div>
 </template>
 
@@ -14,9 +14,7 @@ export default {
 
   data: function () {
     return {
-      fileFolderData: [],
-      fileControlAuth: true, // 文件夹操作权限
-      receiveFrombusiness: {}, // 业务逻辑传入组件的数据
+      fileData: [], // 文件数据
     }
   },
 
@@ -31,36 +29,36 @@ export default {
       this.$NORMAL_POST(this.$INTERFACE.ALL_CATEGORY).then(this.getTableDataPromise);
     },
 
-    // 文件夹的业务逻辑
+    // 获取表格数据  请求的处理函数
+    getTableDataPromise: function (res) {
+      this.fileData = res.data;
+    },
+
+    // 接收组件命令  通向业务逻辑
     exposeToBusiness: function (data) {
       let order = data.order;
       let send = data.data;
-      if (order == 'newFolder') {
-        this.newCate(send);
-      } else if (order == 'deleteFolder') {
-        this.delCate(send);
+      if (order == 'new_folder') {
+        this.newNotice(send);
+      } else if (order == 'delete_file') {
+        this.deleteNotice(send);
       }
     },
 
-    // 创建新的分类
-    newCate: function (send) {
-      this.$NORMAL_POST(this.$INTERFACE.NEW_CATEGORY, send).then(this.operateFolderPromise);
+    // 新建知识库分类
+    newNotice: function (send) {
+      this.$NORMAL_POST(this.$INTERFACE.NEW_CATEGORY, send).then(this.editHandle);
     },
 
-    // 删除分类
-    delCate: function (send) {
-      this.$NORMAL_POST(this.$INTERFACE.DELETE_CATEGORY, send).then(this.operateFolderPromise);
+    // 删除知识库分类
+    deleteNotice: function (send) {
+      this.$NORMAL_POST(this.$INTERFACE.DELETE_CATEGORY, send).then(this.editHandle);
     },
-
-    // 操作文件夹后的操作
-    operateFolderPromise: function (res) {
+    
+    // 编辑后的处理函数
+    editHandle: function (res) {
       this.$message({ type: 'success', message: res.info });
       this.getTableData();
-    },
-
-    // 获取表格数据  请求的处理函数
-    getTableDataPromise: function (res) {
-      this.fileFolderData = res.data;
     }
     
   }
@@ -68,7 +66,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.notice-file {
+.notice-setting {
   width: 100%;
   height: 100%;
 }

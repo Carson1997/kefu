@@ -17,7 +17,7 @@ export default {
         { url: 'groupSetting', name: '群组设置', status: 3 },
         { url: 'userSetting', name: '用户设置', status: 3 },
         { url: 'productSetting', name: '产品分类', status: 3 },
-        { url: 'noticeSetting', name: '公告分类', status: 3 },
+        { url: 'noticeSetting', name: '知识库分类', status: 3 },
         { url: 'projectSetting', name: '项目设置', status: 4 },
       ],
       nowFunction: '', // 当前的功能点

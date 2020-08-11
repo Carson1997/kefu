@@ -1,190 +1,196 @@
-<!-- 文件夹面向业务的封装 -->
 <template>
   <div class="file-folder-component">
-
-    <!-- 文件控制区域-->
-    <fileControlComponent class="fileControlComponent" @search="searchHandle" @newFolder="newFolder" :fileControlAuth="fileControlAuth" :fatherSearchInput="searchInput"></fileControlComponent>
-
-    <!-- 文件路径区域 -->
-    <filePathComponent @switchFolder="switchFolder" class="filePathComponent" :filePathData="filePathData"></filePathComponent>
-
-    <!-- 文件展示区域 -->
-    <fileShowComponent @deleteFolder="deleteFolder" @newFolder="newFolder" @switchFolder="switchFolder" class="fileShowComponent" :searchInput="searchInput" :fileData="fileData" :fileControlAuth="fileControlAuth"></fileShowComponent>
-
+    <filePathComponent @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
+    <fileShowComponent @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
   </div>
 </template>
 
 <script>
-
-import fileControlComponent from '../../components/file/fileControlComponent';
 import filePathComponent from '../../components/file/filePathComponent';
 import fileShowComponent from '../../components/file/fileShowComponent';
-
 export default {
   name: 'fileFolderComponent',
-  
-  components: { fileControlComponent, filePathComponent, fileShowComponent },
 
   props: {
-    fileFolderData: { // 文件夹数据 -- 必须传入
+    fileData: { // 文件数据
       type: Array,
-      required: true
-    },
-    fileControlAuth: { // 文件夹操作权限  -- 必须传入
-      type: Boolean,
       required: true
     }
   },
 
+  components: { filePathComponent, fileShowComponent },
+
   watch: {
-    fileFolderData: function () {
-      this.init();
+    fileData: function () {
+      this.initFileData();
     }
   },
 
   data: function () {
     return {
-      fileFolderDataObj: '', // 文件数据的对象形式
-      filePathData: [], // 文件路径位置
-      fileData: {}, // 展示的文件数据
-      searchInput: '', // 搜索框输入
-      fileFolderLevelData: {}, // 分层级的文件夹数据
+      filePath: '', // 文件夹地址
+      fileShowData: [], // 文件夹展示的数据
+      fileDataObj: {}, // 文件层级数据
+      allName: '全部文件', // 全部文件的名称
+      fatherSearchInput: '', // 文件夹搜索的文字
     }
   },
 
   methods: {
 
-    // 初始化
-    init: function () {
-      let hierarchy = this.$PUBILC.changeArrToHierarchy(this.fileFolderData);
-      let obj = hierarchy.returnObj;
-      this.fileFolderDataObj = hierarchy.all;
-      this.fileFolderLevelData = { '全部文件': { id: 0, name: '全部文件', father: '-', fileType: 1, children: obj } };
-      if (this.filePathData.length == 0) { // 初级文件夹
-        this.fileData = Object.keys(this.fileFolderLevelData['全部文件']['children']).length == 0 ? undefined : this.fileFolderLevelData['全部文件']['children'];
-        this.filePathData.push('全部文件');
-      } else { // 非初级文件夹
-        let path = this.filePathData; // 当前文件路径
-        this.switchFolder({ path: path });
+    // 整理文件数据成为层级关系
+    initFileData: function () {
+      let allName = this.allName;
+      if (this.filePath == '') {
+        this.arrangeFilePath(this.allName);
       }
+      let obj = {};
+      obj[this.allName] = { name: this.allName, children: this.$PUBILC.changeArrToHierarchy(this.fileData) };
+      this.fileDataObj = obj;
+      this.arrangeFileData();
     },
 
-    // 搜索 处理函数 -- 搜索文件
-    searchHandle: function (searchData) {
-      let fileFolderData = this.fileFolderData
-      let _this = this;
-      let searchInput = searchData.searchInput;
-      this.searchInput = searchInput;
-      let searchArr = [];
-      if (searchInput == '') {
-        this.switchFolder({ path: ['全部文件'] });
-      } else {
-        for(let i in fileFolderData) {
-          if (fileFolderData[i].name.indexOf(searchInput) > -1) {
-            let arr = _this.getPath(fileFolderData[i]);
-            searchArr.push({ id: fileFolderData[i].id, name: fileFolderData[i].name, path: arr, fileType: fileFolderData[i].fileType });
-          }
-        }
-        this.filePathData = ['全部文件 (搜索:' + searchInput + ')'];
-        this.fileData = searchArr;
-      }
+    // 整理文件地址
+    arrangeFilePath: function (path) {
+      this.filePath = path;
     },
 
-    // 搜索时寻找文件的路径
-    getPath: function (data) {
+    // 整理展示的文件数据
+    arrangeFileData: function () {
+      let data = this.fileDataObj[this.allName]['children'];
+      if (this.filePath != this.allName) {
+        data = this.findFile(this.filePath).obj;
+      }
+      this.fileShowData = this.changeToArr(data);
+    },
+
+    // 通过层级关系寻找文件夹
+    findFile: function (path) {
+      let obj = this.fileDataObj;
+      path = path.split('/');
+      let fid;
+      for (let i = 0; i < path.length; i++) {
+        fid = obj[path[i]]['id'];
+        obj = obj[path[i]]['children'];
+      }
+      return { fid: fid, obj: obj };
+    },
+
+    // 将数据转换为数组形式
+    changeToArr: function (obj) {
       let arr = [];
-      let id = data.id;
-      while(id != 0) {
-        if(this.fileFolderDataObj[id]['fid'] != 0) {
-          arr.unshift(this.fileFolderDataObj[this.fileFolderDataObj[id]['fid']]['name']);
-          id = this.fileFolderDataObj[id]['fid'];
-        } else {
-          id = 0;
+      for (let i in obj) {
+        if (Array.isArray(obj[i]['path']) == false) {
+          obj[i]['path'] = obj[i]['path'].split('/');
         }
+        arr.push(obj[i])
       }
-      arr.unshift('全部文件');
       return arr;
     },
 
-    // 根据路径取得文件夹的内容
-    switchFolder: function (data) {
-      if (this.searchInput != '') {
-        this.$alert('当前已是搜索' + this.searchInput + '的列表', '标题名称', {confirmButtonText: '确定', callback: action => {}});
+    // 跳转文件夹
+    switchFile: function (path) {
+      this.fatherSearchInput = '';
+      this.arrangeFilePath(path);
+      this.arrangeFileData();
+    },
+
+    // 搜索内容
+    searchHandle: function (value) {
+      this.fatherSearchInput = value;
+      this.filePath = this.allName;
+      let arr
+      if (value != '') {
+        arr = this.searchFile(value);
+        this.fileShowData = arr;
       } else {
-        this.searchInput = '';
-        let path = data.path;
-        let obj = this.fileFolderLevelData;
-        for (let i in path) {
-          obj = obj[path[i]]['children'] == undefined ? {} : obj[path[i]]['children'];
-        }
-        for (let i in obj) {
-          obj[i]['path'] = path;
-        }
-        this.fileData = Object.keys(obj).length == 0 ? undefined : JSON.parse(JSON.stringify(obj));
-        this.filePathData = path;
+        this.arrangeFileData();
       }
     },
 
-    // 新建文件夹
+    // 搜索文件
+    searchFile: function (value) {
+      let arr = this.fileData.filter(item => {
+        if (Array.isArray(item.path) == false) {
+          item.path = item.path.split('/');
+        }
+        return item.name.indexOf(value) > -1;
+      })
+      return arr;
+    },
+
+    // 编辑或者新建文件夹
     newFolder: function (data) {
-      this.searchInput = '';
-      let _this = this;
-      let obj = this.fileFolderLevelData;
-      let pathData = JSON.parse(JSON.stringify(this.filePathData));
-      for (let i = 0; i < pathData.length - 1; i++) {
-        obj = obj[pathData[i]]['children'];
-      }
-      obj = obj[pathData[pathData.length - 1]];
-      obj['children'] == undefined ? obj['children'] = {} : '';
-      let send = { name: data.name, fid: obj.id, path: pathData.splice(1) };
-      send['id'] = data['id'] == undefined ? undefined : data['id'];
-      if (Object.keys(obj['children']).indexOf(data.name) > -1) { // 同名
-        this.$confirm('该目录下已存在同名文件, 是否继续添加', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function () {
-          send['name'] = send['name'] + '_' + new Date().getTime();
-          send['path'].push(send['name']);
-          send['path'] = '/' + send['path'].join('/');
-          _this.exposeToBusiness('newFolder', send);
-        }).catch(function () {});
-      } else {
-        send['path'].push(send['name']);
-        send['path'] = '/' + send['path'].join('/');
-        this.exposeToBusiness('newFolder', send);
-      }
+      let id = data == undefined ? undefined : data.id;
+      let value = data == undefined ? undefined : data.value;
+      this.promptBox('文件夹名称', id, value, this.fileNameCheck)
     },
 
-    // 删除文件夹
-    deleteFolder: function (data) {
-      this.searchInput = '';
-      let send = { id: data.id };
-      this.exposeToBusiness('deleteFolder', send);
+    // 弹出输入提示框
+    promptBox: function (title, id, value, callback) {
+      this.$prompt('请输入' + title, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: value,
+      }).then(function (value) {
+        callback(id, value.value)
+      }).catch();
     },
- 
-    // 请求业务逻辑  与接口交互
-    exposeToBusiness: function (oder, orderData) {
-      this.$emit('exposeToBusiness', { order: oder, data: orderData });
+
+    // 提示弹框
+    alertBox: function (content) {
+      this.$alert(content, '提示', { confirmButtonText: '确定' })
     },
-    
+
+    // 确认弹框
+    confirmBox: function (title, callback) {
+      this.$confirm(title, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function () {
+        callback();
+      }).catch(function () {});
+    },
+
+    // 文件名检测
+    fileNameCheck: function (id, value) {
+      for (let i in this.fileShowData) {
+        if (this.fileShowData[i]['name'] == value) {
+          this.alertBox('该文件夹下存在同名文件或者文件夹');
+          return false;
+        }
+      }
+      this.newFolderApply(id, value);
+    },
+
+    // 申请新建编辑文件夹
+    newFolderApply: function (id, name) {
+      let path = JSON.parse(JSON.stringify(this.filePath));
+      let fid = this.findFile(path).fid;
+      fid = fid == undefined ? 0 : fid;
+      path = path.split('/');
+      path.splice(0, 1, '');
+      path.push(name);
+      path = path.join('/');
+      let send = { id: id, name: name, path: path, fid: fid };
+      this.exposeToBusiness('new_folder', send)
+    },
+
+    // 删除文件
+    deleteFile: function (data) {
+      let _this = this;
+      this.confirmBox('此操作将无法撤销', function () {
+        let id = data.id;
+        _this.exposeToBusiness('delete_file', { id: id });
+      })
+    },
+
+    // 暴露给业务的接口
+    exposeToBusiness: function (order, data) {
+      this.$emit('exposeToBusiness', { order: order, data: data });
+    }
+
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.fileControlComponent {
-  width: 100%;
-  margin-bottom: 15px;
-}
-.filePathComponent {
-  width: 100%;
-  margin-bottom: 15px;
-}
-.fileShowComponent {
-  width: 100%;
-  height: calc(100% - 90px);
-  border: solid 1px #f0f0f0;
-  box-shadow: 0 0 1px #bebebe;
-}
-</style>
