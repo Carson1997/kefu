@@ -18,6 +18,7 @@
         </div>
         </div>
     </div>
+
     <div class="page-left-nav" v-bind:class="{ noShowNav: isShowNav }">
       <div class="each-page-left-nav" v-for="item in leftNav" :key="item.index" @click="switchPage(item.url, item.name)">
         <span class="iconfont" :class="item.icon"></span>
@@ -28,13 +29,17 @@
       </div>
     </div>
     <!-- <keep-alive> -->
-      <router-view class="page-right-content" v-bind:class="{ noShowNavRightContent: isShowNav }"></router-view>
+    <router-view class="page-right-content" v-bind:class="{ noShowNavRightContent: isShowNav }"></router-view>
     <!-- </keep-alive> -->
+
+    <!-- 上传的文件 -->
+    <uploadProgress class="uploadProgress" :class="{ showUploadProgress: showUploadProgress == true }"></uploadProgress>
   </div>
 </template>
 
 <script>
 import '..//assets/css/iconfont.css';
+import uploadProgress from '../components/upload/uploadProgress'
 export default {
   name: 'Index',
 
@@ -68,8 +73,14 @@ export default {
 
     nowOpenPage: function () { // 当前打开的页面
       return this.$store.state.NOW_OPEN_PAGE;
+    },
+
+    showUploadProgress: function () { // 是否显示对话框
+      return this.$store.state.SHOW_UPLOAD_PROGRESS
     }
   },
+
+  components: { uploadProgress },
 
   data: function () {
     return {
@@ -313,5 +324,24 @@ export default {
 
 .noShowNavRightContent {
   width: 100%;
+}
+
+.uploadProgress {
+  position: absolute;
+  width: 550px;
+  height: 250px;
+  background: white;
+  right: 50px;
+  bottom: -210px;
+  border: solid 1px #ececec;
+  box-shadow: 0 0 1px #d3d3d3;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  z-index: 10000;
+  transition: all .5s;
+}
+
+.showUploadProgress {
+  bottom: 0px;
 }
 </style>

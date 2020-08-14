@@ -3,8 +3,8 @@
     <div class="file-area" v-if="fileShowData.length != 0">
       <div class="header">
         <div class="each-head">名称</div>
-        <div class="each-head">路径</div>
-        <div class="each-head alignRight">操作</div>
+        <!-- <div class="each-head">所属路径</div> -->
+        <div class="each-head alignRight" v-if="fileAuth == true">操作</div>
         <div class="clear"></div>
       </div>
       <div class="body">
@@ -16,11 +16,11 @@
             </div>
             <span class="file-cursor" @click="switchFile('next', item)">{{ item.name }}</span>
           </div>
-          <div class="each-file-part path"><span class="file-cursor" @click="switchFile('pre', item)">{{ item.path[item.path.length - 2] }}</span></div>
-          <div class="each-file-part operation">
+          <!-- <div class="each-file-part path"><span class="file-cursor" @click="switchFile('pre', item)">{{ item.path[item.path.length - 2] }}</span></div> -->
+          <div class="each-file-part operation" v-if="fileAuth == true">
             <el-button type="primary" size="mini" plain @click="editFileName(item)">重命名</el-button>
-            <el-button type="warning" size="mini" plain>编辑文件</el-button>
-            <el-button type="danger" size="mini" plain @click="deleteFile(item.id)">删除</el-button>
+            <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1">编辑文件</el-button>
+            <el-button class="red" type="danger" plain size="mini" @click="deleteFile(item.id)">删除</el-button>
           </div>
           <div class="clear"></div>
         </div>
@@ -45,18 +45,27 @@ export default {
     fileShowData: { // 文件夹展示数据
       type: Array,
       required: true
+    },
+    fileAuth: { // 文件夹操作权限
+      type: Boolean,
+      required: true
     }
   },
 
   methods: {
+
     // 跳转文件
     switchFile: function (operation, data) {
-      let path = data.path
-      if (operation == 'pre') {
-        path = path.slice(0, path.length - 1);
+      if (data.file_type == 0) {
+        let path = data.path
+        if (operation == 'pre') {
+          path = path.slice(0, path.length - 1);
+        }
+        path = path.join('/');
+        this.$emit('switchFile', path);
+      } else if (data.file_type == 1) {
+        this.$emit('seeFile', { fid: data.id });
       }
-      path = path.join('/');
-      this.$emit('switchFile', path);
     },
 
     // 重命名文件夹
@@ -67,6 +76,11 @@ export default {
     // 删除文件夹
     deleteFile: function (id) {
       this.$emit('deleteFile', { id: id });
+    },
+
+    // 编辑文件
+    editFile: function (data) {
+      this.$emit('editFile', data);
     }
   }
 }
@@ -98,6 +112,7 @@ export default {
 }
 
 .file-area .header .alignRight {
+  float: right;
   text-align: right;
   padding-right: 50px;
 }
@@ -144,8 +159,9 @@ export default {
 }
 
 .file-area .each-file .operation {
+  float: right;
   text-align: right;
-  padding-right: 10px;
+  padding-right: 20px;
 }
 
 .no-file {
@@ -168,4 +184,5 @@ export default {
   float: left;
   align-items: center;
 }
+
 </style>

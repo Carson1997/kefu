@@ -24,6 +24,9 @@ export default new Vuex.Store({
     NOW_OPEN_PAGE: '', // 当前打开页面
     NOW_OPEN_DIALOG: '', // 目前打开的对话框
     NOW_OPEN_SEC_DIALOG: '', // 目前打开的二级对话框
+    UOLOAD_PROGRESS: [], // 当前上传的进度
+    SHOW_UPLOAD_PROGRESS: false, // 是否显示上传框
+    EDIT_CONTENT: '', // 输入框的内容
   },
 
   mutations: {
@@ -42,6 +45,33 @@ export default new Vuex.Store({
     changeNowSecDialog: function (state, value) {
       state.NOW_OPEN_SEC_DIALOG = value;
     },
+
+    // 修改当前上传进度条
+    changeUploadProgress: function (state, value) {
+      state.UOLOAD_PROGRESS.push(value);
+    },
+
+    // 修改当前上传进度条的进度
+    changeUploadProgressBar: function (state, value) {
+      let arr = state.UOLOAD_PROGRESS;
+      arr[value]['index'] += 1;
+      state.UOLOAD_PROGRESS = arr.slice(0);
+    },
+
+    // 修改当前上传进度条的提示
+    changeUploadProgressMessage: function (state, value) {
+      let arr = state.UOLOAD_PROGRESS;
+      arr[value.index]['message'] = value.message;
+      arr[value.index]['status'] = value.status;
+      arr[value.index]['show'] = value.show;
+      state.UOLOAD_PROGRESS = arr.slice(0);
+    },
+
+    // 修改是否显示上传框
+    changeShowUploadProgress: function (state, value) {
+      state.SHOW_UPLOAD_PROGRESS = value;
+    }
+
   },
 
   actions: {

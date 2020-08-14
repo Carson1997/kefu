@@ -32,14 +32,32 @@ var Interface = {
   ALL_ROLE: REQUEST_URL + '/user/group_ing', // 角色
   ALL_CATEGORY: REQUEST_URL + '/Content/category', // 所有知识库分类
   NEW_CATEGORY: REQUEST_URL + '/Content/category_add_update', // 添加知识库文件夹或者文件
+  EDIT_CATEGORY_DETAIL: REQUEST_URL + '/Content/content', // 编辑知识库文章
+  CATEGORY_DETAIL: REQUEST_URL + '/Content/content_html', // 获取知识库文章的详细
   DELETE_CATEGORY: REQUEST_URL + '/Content/category_del', // 删除知识库分类
-  ALL_PRODUCT_CATEGORY: REQUEST_URL + '/Product/Product_cat', // 所有产品分类
-  NEW_PRODUCT_CATEGORY: REQUEST_URL+ '/Product/cat_add_update', // 添加产品分类
-  DEL_PRODUCT_CATEGORY: REQUEST_URL + '/Product/cat_del', // 删除产品分类
 
   // ******************* 设置模块的接口 *****************************************
 
 
+  // ******************  上传文件的接口 *****************************************
+
+  FILE_TEST: 'http://service.miniice.cn/binghuo_information/index.php/Api/Training/Testing/', // 上传文件前的检测
+  FILE_UPLOAD: 'http://service.miniice.cn/binghuo_information/index.php/Api/Training/upload_order_mp4/', // 上传文件接口
+  FILE_MERGE: 'http://service.miniice.cn/binghuo_information/index.php/Api/Training/merge/', // 上传文件合并
+  
+  // ******************  上传文件的接口 *****************************************
+
+
+  // ******************  产品查询 *****************************************
+  
+  ALL_PRODUCT_CATEGORY: REQUEST_URL + '/Product/Product_cat', // 所有产品分类
+  NEW_PRODUCT_CATEGORY: REQUEST_URL+ '/Product/cat_add_update', // 添加产品分类
+  DEL_PRODUCT_CATEGORY: REQUEST_URL + '/Product/cat_del', // 删除产品分类
+  ALL_PRODUCT_CATEGORY_DETAIL: REQUEST_URL + '/Product/content', // 产品分类详细数据
+  ADD_PRODUCT_CATEGORY_DETAIL: REQUEST_URL + '/Product/add_update', // 更新插入产品分类详细数据
+  DEL_PRODUCT_CATEGORY_DETAIL: REQUEST_URL + '/product/prd_del', // 删除产品分类详细数据
+
+  // ******************  产品查询 *****************************************
 }
 
 export default Interface;

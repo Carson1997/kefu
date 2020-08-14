@@ -1,8 +1,8 @@
 <template>
   <div class="file-path-component">
     <div class="file-controller">
-      <el-button class="control-button" type="primary" size="small" plain @click="newFolder(0)" :disabled="searchInput != ''">新建文件夹</el-button>
-      <el-button class="control-button" type="success" size="small" plain :disabled="searchInput != ''" @click="newFolder(1)">新建文件</el-button>
+      <el-button class="control-button" v-if="fileAuth" type="primary" size="small" plain @click="newFolder(0)" :disabled="searchInput != ''">新建文件夹</el-button>
+      <el-button class="control-button" v-if="fileAuth" type="success" size="small" plain :disabled="searchInput != ''" @click="newFolder(1)">新建文件</el-button>
        <el-input class="control-input" placeholder="请输入内容" v-model="searchInput" @input="searchHandle">
         <template slot="append">
           <span class="el-icon-search"></span>
@@ -30,6 +30,10 @@ export default {
     },
     fatherSearchInput: {
       type: String,
+      required: true
+    },
+    fileAuth: { // 文件夹操作权限
+      type: Boolean,
       required: true
     }
   },

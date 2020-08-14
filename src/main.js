@@ -13,6 +13,7 @@ Vue.use(ElementUI);
 
 Vue.prototype.$INTERFACE = Interface;
 Vue.prototype.$NORMAL_POST = Post.normalPost;
+Vue.prototype.$FILE_POST = Post.filePost;
 Vue.prototype.$PUBILC = Pubilc;
 Vue.prototype.$JS_COOKIE = JsCookie;
 

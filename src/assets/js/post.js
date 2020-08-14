@@ -17,7 +17,7 @@ var Request = {
    * requestData: 请求传输的数据
    * yearnValue: 渴望处理的值
    */
-  normalPost: function (requestUrl, requestData = {}, yearnValue = 0) {
+  normalPost: function (requestUrl, requestData = {}, yearnValue = 0, needToRes = []) {
     VUE = this;
     requestData = addToken(requestData);
     return new Promise(function (resolve, reject) {
@@ -27,15 +27,47 @@ var Request = {
         data: Qs.stringify(requestData)
       }).then(function (res) {
         if (res.data.status == yearnValue) {
+          res.data['needToRes'] = {};
+          for (let i in needToRes) {
+            res.data['needToRes'][needToRes[i]] = requestData[needToRes[i]];
+          }
           resolve(res.data);
         }
         filterRes(res.data);
       }).catch(function (error) {
-        alert(error)
+        console.log(error)
       });
     })
     
+  },
+
+  /**
+   * 上传文件的请求
+   * requestUrl：上传文件的地址
+   * requestData: 上传的数据
+   */
+  filePost: function (requestUrl, requestData, index) {
+    let _this = this;
+    let formData = new FormData(); 
+    for (let i in requestData) {
+      formData.append(i, requestData[i]);
+    }
+    console.log(requestData);
+    return new Promise((resolve, reject) => {
+      Axios({
+        url: requestUrl,
+        method: 'post',
+        data: formData,
+        timeout: 300000,
+      }).then(function (res) {
+        _this.$store.commit('changeUploadProgressBar', index);
+        resolve(res);
+      }).catch(function (error) {
+        reject(error);
+      })
+    })
   }
+
 }
 
 export default Request;

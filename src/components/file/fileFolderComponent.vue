@@ -1,7 +1,7 @@
 <template>
   <div class="file-folder-component">
-    <filePathComponent @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
-    <fileShowComponent @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
+    <filePathComponent :fileAuth="fileAuth" @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
+    <fileShowComponent @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
     <newfileDialog @closeHandle="closeHandle" @newFolderApply="newFolderApply" v-if="newfileDialog" :nowFile="fileShowData" :editFileData="editFileData"></newfileDialog>
   </div>
 </template>
@@ -16,6 +16,10 @@ export default {
   props: {
     fileData: { // 文件数据
       type: Array,
+      required: true
+    },
+    fileAuth: { // 文件夹操作权限
+      type: Boolean,
       required: true
     }
   },
@@ -89,6 +93,13 @@ export default {
         }
         arr.push(obj[i])
       }
+      arr.sort(function (a, b) {
+        if (a.file_type == '0') {
+          return -1;
+        }else {
+          return 1;
+        }
+      })
       return arr;
     },
 
@@ -97,6 +108,11 @@ export default {
       this.fatherSearchInput = '';
       this.arrangeFilePath(path);
       this.arrangeFileData();
+    },
+
+    // 查看文件
+    seeFile: function (data) {
+      this.$emit('seeFile', data);
     },
 
     // 搜索内容
@@ -168,6 +184,11 @@ export default {
         let id = data.id;
         _this.exposeToBusiness('delete_file', { id: id });
       })
+    },
+
+    // 编辑文件
+    editFile: function (data) {
+      this.exposeToBusiness('edit_file', data);
     },
 
     // 暴露给业务的接口

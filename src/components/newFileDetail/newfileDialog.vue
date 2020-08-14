@@ -131,7 +131,6 @@ export default {
 .input-area {
   width: 100%;
   padding: 20px;
-  
   border-top: solid 1px lightgray;
 }
 
