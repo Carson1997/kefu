@@ -12,6 +12,7 @@ var Pubilc = {
     sessionStorage.grouping = JSON.stringify(res.data.grouping); // 群组
     sessionStorage.shop_id = JSON.stringify(res.data.shop_id); // 项目id
     sessionStorage.status = JSON.stringify(res.data.status); // 权限
+    sessionStorage.userId = JSON.stringify(res.data.id); // 用户id
   },
 
   // 将session上的信息转换到vuex中存储
@@ -21,6 +22,7 @@ var Pubilc = {
     Vue.$store.commit('changeNormalValue', { name: 'USER_GROUPING', value: JSON.parse(sessionStorage.grouping) }); // 群组
     Vue.$store.commit('changeNormalValue', { name: 'USER_AUTHORITY', value: JSON.parse(sessionStorage.authority) }); // 左边权限
     Vue.$store.commit('changeNormalValue', { name: 'USER_SHOP_ID', value: JSON.parse(sessionStorage.shop_id) }); // 店铺id
+    Vue.$store.commit('changeNormalValue', { name: 'USER_ID', value: JSON.parse(sessionStorage.userId) }); // 用户id
   },
 
   // 清除vuex中存储session的数据
@@ -30,6 +32,8 @@ var Pubilc = {
     Vue.$store.commit('changeNormalValue', { name: 'USER_GROUPING', value: '' }); // 群组
     Vue.$store.commit('changeNormalValue', { name: 'USER_AUTHORITY', value: '' }); // 左边权限
     Vue.$store.commit('changeNormalValue', { name: 'USER_SHOP_ID', value: '' }); // 店铺id
+    Vue.$store.commit('changeNormalValue', { name: 'USER_ID', value: '' }); // 店铺id
+    Vue.$store.commit('clearAll'); // 所有内容
   },
 
   // 清理session
@@ -39,13 +43,14 @@ var Pubilc = {
     sessionStorage.removeItem("grouping");
     sessionStorage.removeItem("shop_id");
     sessionStorage.removeItem("status");
+    sessionStorage.removeItem("userId");
     Vue.$JS_COOKIE.remove('bhds_token', { path: '' });
   },
 
   // 设置表格高度
-  setTableHeight: function (id, component) {
+  setTableHeight: function (id, component, subHeight = 155) {
     return function () {
-      let height = document.getElementById(id).clientHeight - 155;
+      let height = document.getElementById(id).clientHeight - subHeight;
       component.tableHeight = height;
     }
   },
@@ -67,6 +72,38 @@ var Pubilc = {
 		})
 		let children = data.filter(value => {
       value['path'] = '全部文件' + value['path'];
+			return value.fid != 0;
+		})
+		let find = (parents, children) => {
+			parents.forEach(parent => {
+				children.forEach((current, index) => {
+					if (current.fid === parent.id) {
+						let temp = JSON.parse(JSON.stringify(children));
+						temp.splice(index, 1);
+            find([current], temp);
+            let attr = current['name'];
+            typeof parent.children !== 'undefined' ? '' : parent.children = {};
+            parent.children[attr] = current;
+					}
+				});
+			})
+		}
+    find(parents, children);
+    for (let i in parents) {
+      returnObj[parents[i]['name']] = parents[i];
+    }
+		return returnObj;
+  },
+
+  // 将数组递归成父子级别的形式  普通模式
+  changeArrToHierarchyNormal: function (data) {
+    let returnObj = {}
+		let parents = data.filter(value => {
+			value['label'] = value['name'];
+      value['value'] = value['id'];
+			return value.fid == 0;
+		})
+		let children = data.filter(value => {
 			return value.fid != 0;
 		})
 		let find = (parents, children) => {

@@ -36,6 +36,7 @@ export default {
         this.$router.replace('/login');
       } else {
         try {
+          console.log(sessionStorage.username);
           JSON.parse(sessionStorage.username); // 用户姓名
           JSON.parse(sessionStorage.authority); // 左边权限
           JSON.parse(sessionStorage.grouping); // 群组
@@ -76,5 +77,9 @@ export default {
 
 .clear {
   clear: both;
+}
+
+.el-tabs__header {
+  margin: 0 !important;
 }
 </style>

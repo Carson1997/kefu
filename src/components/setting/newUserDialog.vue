@@ -1,16 +1,16 @@
 <template>
   <el-dialog title="创建用户" :visible="dialogVisible" width="30%" append-to-body :before-close="handleClose" :close-on-press-escape="false" :close-on-click-modal="false">
     <div class="content">
-      <el-input class="each-input" placeholder="请输入账号" v-model="username">
+      <el-input v-if="isBatch != true" class="each-input" placeholder="请输入账号" v-model="username">
         <template slot="prepend">账号: </template>
       </el-input>
-      <el-input class="each-input" show-password placeholder="请输入密码" v-model="password">
+      <el-input v-if="isBatch != true" class="each-input" show-password placeholder="请输入密码" v-model="password">
         <template slot="prepend">密码: </template>
       </el-input>
-      <el-input class="each-input" placeholder="请输入姓名" v-model="name">
+      <el-input v-if="isBatch != true" class="each-input" placeholder="请输入姓名" v-model="name">
         <template slot="prepend">姓名: </template>
       </el-input>
-      <el-input class="each-input" placeholder="请输入手机" v-model="phone">
+      <el-input class="each-input" v-if="isBatch != true" placeholder="请输入手机" v-model="phone">
         <template slot="prepend">手机: </template>
       </el-input>
 
@@ -48,7 +48,7 @@ const Crypto = require("crypto"); // 加密模块
 export default {
   name: 'newUser',
 
-  props: [ 'projectId', 'userData' ],
+  props: [ 'projectId', 'userData', 'isBatch', 'batchData' ],
 
   computed: {
 
@@ -168,10 +168,12 @@ export default {
       let sha = Crypto.createHash("sha1");
       if (legitimacy == true) {
         let password = JSON.parse(JSON.stringify(this.password));
-        send['username'] = this.username;
-        send['password'] = sha.update(password).digest("hex");;
-        send['name'] = this.name;
-        send['phone'] = this.phone;
+        if (this.isBatch != true) {
+          send['username'] = this.username;
+          send['password'] = sha.update(password).digest("hex");;
+          send['name'] = this.name;
+          send['phone'] = this.phone;
+        }
         if (this.projectId == undefined) {
           send['grouping'] = this.groupValue.join(',');
           send['status'] = this.statusValue;
@@ -183,27 +185,34 @@ export default {
         if (this.userData != undefined && Object.keys(this.userData).length > 0) {
           send['user_id'] = this.userData['id']
         }
-        this.$NORMAL_POST(this.$INTERFACE.NEW_USER, send).then(this.addUserPromise);
+        let url = this.$INTERFACE.NEW_USER;
+        if (this.isBatch == true) {
+          url = this.$INTERFACE.BATCH_USER_UPLOAD;
+          send['data'] = JSON.stringify(this.batchData);
+        }
+        this.$NORMAL_POST(url, send).then(this.addUserPromise);
       }
     },
 
     // 检查输入的合法性
     checkLegitimacy: function () {
-      if (this.username == '') {
-        this.alert('请输入用户名!');
-        return false;
-      }
-      if (this.password == '') {
-        this.alert('请输入密码!');
-        return false;
-      }
-      if (this.name == '') {
-        this.alert('请输入姓名!');
-        return false;
-      }
-      if (this.phone == '' || this.phone.length != 11) {
-        this.alert('请输入正确的手机!');
-        return false;
+      if (this.isBatch != true) {
+        if (this.username == '') {
+          this.alert('请输入用户名!');
+          return false;
+        }
+        if (this.password == '') {
+          this.alert('请输入密码!');
+          return false;
+        }
+        if (this.name == '') {
+          this.alert('请输入姓名!');
+          return false;
+        }
+        if (this.phone == '' || this.phone.length != 11) {
+          this.alert('请输入正确的手机!');
+          return false;
+        }
       }
       if (this.projectId == undefined) {
         if (this.groupValue.length == 0) {

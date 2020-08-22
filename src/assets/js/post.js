@@ -52,7 +52,6 @@ var Request = {
     for (let i in requestData) {
       formData.append(i, requestData[i]);
     }
-    console.log(requestData);
     return new Promise((resolve, reject) => {
       Axios({
         url: requestUrl,

@@ -1,7 +1,7 @@
 <template>
   <div class="product-inquiry">
-    <fileFolderComponent :fileData="fileData" :fileAuth="fileAuth" class="product-file" @exposeToBusiness="exposeToBusiness"></fileFolderComponent>
-    <productCatDetail v-if="productCatDetailShow" :productCatData="productCatData"></productCatDetail>
+    <fileFolderComponent @seeFile="seeFile" :fileData="fileData" :fileAuth="fileAuth" class="product-file" @exposeToBusiness="exposeToBusiness"></fileFolderComponent>
+    <productCatDetail @close="closeDetail" :editAuth="fileAuth" v-if="productCatDetailShow" :productCatData="productCatData"></productCatDetail>
   </div>
 </template>
 
@@ -51,7 +51,24 @@ export default {
         this.newProductCate(order, send);
       } else if (order == 'delete_file') {
         this.deleteProductCate(send);
+      } else if (order == 'edit_file') {
+        this.editFile(send);
       }
+    },
+
+    // 编辑产品分类
+    editFile: function (data) {
+      this.productCatDetailShow = true
+      this.$store.commit('changeNowDialog', 'productCatDetail');
+      let obj = { fid: data.id };
+      this.productCatData = { fid: data.id };
+    },
+
+    // 查看产品
+    seeFile: function (data) {
+      this.productCatDetailShow = true
+      this.$store.commit('changeNowDialog', 'productCatDetail');
+      this.productCatData = data;
     },
 
     // 新增产品分类
@@ -76,6 +93,12 @@ export default {
     deleteProductCate: function (send) {
       this.$NORMAL_POST(this.$INTERFACE.DEL_PRODUCT_CATEGORY, send).then(this.operateFolderPromise);
     },
+
+    // 关闭详细对话框
+    closeDetail: function () {
+      this.productCatDetailShow = false;
+      this.$store.commit('changeNowDialog', '');
+    }
   }
 }
 </script>

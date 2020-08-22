@@ -50,6 +50,7 @@ export default {
 <style lang="scss" scoped>
 .peview-area {
   width: 100%;
+  overflow: auto;
   border-top: solid 1px lightgray;
 }
 .preview-detail {

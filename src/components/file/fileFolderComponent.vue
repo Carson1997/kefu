@@ -1,7 +1,7 @@
 <template>
   <div class="file-folder-component">
     <filePathComponent :fileAuth="fileAuth" @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
-    <fileShowComponent @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
+    <fileShowComponent @customClick="customClick" :customButton="customButton" @dragend="dragend" @dragstart="dragstart" :isCanDrag="isCanDrag" :isCanEdit="fileIsCanEdit" @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
     <newfileDialog @closeHandle="closeHandle" @newFolderApply="newFolderApply" v-if="newfileDialog" :nowFile="fileShowData" :editFileData="editFileData"></newfileDialog>
   </div>
 </template>
@@ -21,6 +21,20 @@ export default {
     fileAuth: { // 文件夹操作权限
       type: Boolean,
       required: true
+    },
+    fileIsCanEdit: { // 文件能否编辑
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    isCanDrag: { // 文件能否拖拉
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    customButton: { // 自定义按钮
+      type: Object,
+      required: false,
     }
   },
 
@@ -168,6 +182,7 @@ export default {
       let path = JSON.parse(JSON.stringify(this.filePath));
       let fid = this.findFile(path).fid;
       fid = fid == undefined ? 0 : fid;
+      data['fid'] = fid;
       path = path.split('/');
       path.splice(0, 1, '');
       path.push(data.name);
@@ -189,6 +204,21 @@ export default {
     // 编辑文件
     editFile: function (data) {
       this.exposeToBusiness('edit_file', data);
+    },
+
+    // 文件显示组件文件开始拖拉
+    dragstart: function (data) {
+      this.exposeToBusiness('dragstart', data);
+    },
+
+    // 文件显示组件拖拉结束
+    dragend: function () {
+      this.exposeToBusiness('dragend');
+    },
+
+    // 自定义点击
+    customClick: function (data) {
+      this.exposeToBusiness(data.order, data.data);
     },
 
     // 暴露给业务的接口

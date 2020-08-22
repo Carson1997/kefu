@@ -8,7 +8,7 @@
         <div class="clear"></div>
       </div>
       <div class="body">
-        <div class="each-file" v-for="item in fileShowData" :key="item.id">
+        <div class="each-file" v-for="item in fileShowData" :key="item.id" :draggable="isCanDrag"  @dragstart="dragstart(item, $event)" @dragend="dragend">
           <div class="each-file-part name">
             <div class="img-sign">
               <img src="../../../public/img/folder.png" v-if="item.file_type == 0">
@@ -18,8 +18,9 @@
           </div>
           <!-- <div class="each-file-part path"><span class="file-cursor" @click="switchFile('pre', item)">{{ item.path[item.path.length - 2] }}</span></div> -->
           <div class="each-file-part operation" v-if="fileAuth == true">
-            <el-button type="primary" size="mini" plain @click="editFileName(item)">重命名</el-button>
-            <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1">编辑文件</el-button>
+            <!-- <el-button type="primary" size="mini" plain @click="editFileName(item)">重命名</el-button> -->
+            <el-button v-if="customButton" type="primary" size="mini" plain @click="customClick(item, customButton.order)">{{ customButton.name }}</el-button>
+            <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1 && isCanEdit == true && item.isCanEdit != false">编辑文件</el-button>
             <el-button class="red" type="danger" plain size="mini" @click="deleteFile(item.id)">删除</el-button>
           </div>
           <div class="clear"></div>
@@ -49,6 +50,20 @@ export default {
     fileAuth: { // 文件夹操作权限
       type: Boolean,
       required: true
+    },
+    isCanEdit: { // 是否能够编辑文件
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    isCanDrag: { // 文件能否拖拉
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    customButton: { // 自定义按钮
+      type: Object,
+      required: false,
     }
   },
 
@@ -70,7 +85,7 @@ export default {
 
     // 重命名文件夹
     editFileName: function (data) {
-      this.$emit('newFolder', { id: data.id, name: data.name, authority: data.authority, grouping: data.grouping == null ? [] : data.grouping.split(','), file_type: 0 });
+      this.$emit('newFolder', { id: data.id, name: data.name, authority: data.authority, grouping: data.grouping == null ? [] : data.grouping.split(','), file_type: data.file_type });
     },
 
     // 删除文件夹
@@ -81,6 +96,21 @@ export default {
     // 编辑文件
     editFile: function (data) {
       this.$emit('editFile', data);
+    },
+
+    // 拖拉开始
+    dragstart: function (data, event) {
+      this.$emit('dragstart', data);
+    },
+
+    // 拖拉结束
+    dragend: function (data, event) {
+      this.$emit('dragend');
+    },
+
+    // 自定义按钮被点击
+    customClick: function (data, order) {
+      this.$emit('customClick', { order: order, data: data });
     }
   }
 }
@@ -114,7 +144,7 @@ export default {
 .file-area .header .alignRight {
   float: right;
   text-align: right;
-  padding-right: 50px;
+  padding-right: 30px;
 }
 
 .file-area .body {

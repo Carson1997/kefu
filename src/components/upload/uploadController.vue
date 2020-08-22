@@ -15,6 +15,12 @@ import SparkMD5 from 'spark-md5'
 export default {
   name: 'uploadController',
 
+  props: {
+    index: {
+      required: false
+    }
+  },
+
   data: function () {
     return {
       chunks: [], // 上传文件的切片
@@ -119,7 +125,7 @@ export default {
         _this.$store.commit('changeShowUploadProgress', false);
       }, 1000);
       this.uploadSuccess = true;
-      this.$emit('uploadSuccess', res.data);
+      this.$emit('uploadSuccess', { index: this.index, data: res.data });
       this.$refs.uploadInput.value = '';
     },
 

@@ -16,6 +16,18 @@ import ProductSetting from '../views/setting/productSetting.vue' // 产品分类
 import ProjectSetting from '../views/setting/projectSetting.vue' // 项目设置
 import UserSetting from '../views/setting/userSetting.vue' // 用户设置
 
+import examManage from '../views/examination/examManage.vue'; // 考试管理
+import trainManage from '../views/examination/trainManage.vue'; // 培训管理
+import sourceManage from '../views/examination/sourceManage.vue'; // 素材资源管理
+import examHistory from '../views/examination/examHistory.vue'; // 历史考试管理
+
+import myExam from '../views/train/myExam.vue'; // 我的考试
+import myTrain from '../views/train/myTrain.vue'; // 我的培训
+
+import dataStatisticsTable from '../views/dataStatistics/dataStatisticsTable.vue';
+import makeTable from '../views/dataStatistics/makeTable.vue';
+import uploadData from '../views/dataStatistics/uploadData.vue';
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -29,7 +41,24 @@ const routes = [
         component: DataStatistics,
         meta: {
           keepAlive: true
-        }
+        },
+        children: [
+          {
+            path: 'dataStatisticsTable',
+            name: 'dataStatisticsTable',
+            component: dataStatisticsTable
+          },
+          {
+            path: 'makeTable',
+            name: 'makeTable',
+            component: makeTable
+          },
+          {
+            path: 'uploadData',
+            name: 'uploadData',
+            component: uploadData
+          },
+        ]
       },
       {
         path: '/productInquiry',
@@ -50,14 +79,48 @@ const routes = [
         component: Examination,
         meta: {
           keepAlive: true
-        }
+        },
+        children: [
+          {
+            path: 'examManage',
+            name: 'examManage',
+            component: examManage
+          },
+          {
+            path: 'trainManage',
+            name: 'trainManage',
+            component: trainManage
+          },
+          {
+            path: 'sourceManage',
+            name: 'sourceManage',
+            component: sourceManage
+          },
+          {
+            path: 'examHistory',
+            name: 'examHistory',
+            component: examHistory
+          }
+        ]
       },
       {
         path: '/train',
         component: Train,
         meta: {
           keepAlive: true
-        }
+        },
+        children: [
+          {
+            path: 'myExam',
+            name: 'myExam',
+            component: myExam
+          },
+          {
+            path: 'myTrain',
+            name: 'myTrain',
+            component: myTrain
+          },
+        ]
       },
       {
         path: '/notice',

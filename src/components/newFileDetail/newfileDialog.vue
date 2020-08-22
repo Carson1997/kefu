@@ -82,9 +82,9 @@ export default {
       if (legitimacy == true) {
         let nameConflict = this.fileNameCheck(this.editFileData.name);
         if (nameConflict == false) {
+          this.handleClose();
           this.editFileData.grouping = this.editFileData.grouping.join(',');
           this.$emit('newFolderApply', this.editFileData);
-          this.handleClose();
         }
       }
     },

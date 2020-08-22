@@ -221,6 +221,8 @@ export default {
   padding-top: 1px;
   font-size: 14px;
   display: none;
+  background: white;
+  z-index: 100;
 }
 
 .page-head-user-info-top {

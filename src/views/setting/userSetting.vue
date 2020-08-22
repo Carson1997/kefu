@@ -4,6 +4,9 @@
     <!-- 控制区域 -->
     <div class="control-area">
       <el-button type="primary" size="small" @click="newUser">创建用户</el-button>
+
+      <el-button type="success" size="small" @click="batchNewUserLis">批量创建用户</el-button>
+      <input type="file" ref="fileUpload" class="none" @change="uploadChange">
       <el-input class="search-input" v-model="searchInput" placeholder="输入项目名称搜索项目" clearable suffix-icon="el-icon-search"></el-input>
     </div>
 
@@ -26,11 +29,14 @@
     </el-table>
 
     <!-- 创建用户弹框 -->
-    <newUserDialog :userData="userData" @update="getTableData" v-if="newUserDialog"></newUserDialog>
+    <newUserDialog :isBatch="isBatch" :batchData="batchData" :userData="userData" @update="getTableData" v-if="newUserDialog"></newUserDialog>
   </div>
 </template>
 
 <script>
+import XLSX, { read } from "xlsx";
+import jschardet from "jschardet";
+import papaparse from "papaparse";
 import newUserDialog from '../../components/setting/newUserDialog';
 export default {
   name: 'userSetting',
@@ -45,6 +51,8 @@ export default {
       setTableHeightFunc: '', // 设置表格高度的方法
       tableData: [], // 表格数据
       userData: {}, // 用户信息数据
+      isBatch: false, // 是否批量上传数据
+      batchData: [], // 批量上传数据
     }
   },
 
@@ -72,6 +80,8 @@ export default {
 
     // 创建用户
     newUser: function () {
+      this.batchData = [];
+      this.isBatch = false;
       this.newUserDialog = true;
       this.$store.commit('changeNowDialog', 'newUser');
     },
@@ -109,7 +119,90 @@ export default {
       this.userData = data;
       this.newUserDialog = true;
       this.$store.commit('changeNowDialog', 'newUser');
-    }
+    },
+
+    // 批量上传按钮监听
+    batchNewUserLis: function () {
+      this.$refs.fileUpload.click();
+    },
+
+    // 上传文件发生变化
+    uploadChange: function (event) {
+      let _this = this;
+      let file = event.target.files[0];
+      let fileReader = new FileReader();
+      let fileType = file.name.split(".").reverse()[0];
+      fileReader.onload = function (event) {
+        let data = event.target.result;
+        if (fileType == 'csv') { // 解析csv文件
+          _this.readCsvCon(file, data);
+        } else { // 解析excel文件
+          _this.readExcel(data);
+        }
+      }
+      if (fileType == 'csv') { // 读取文件
+        fileReader.readAsDataURL(file);
+      } else { // excel文件
+        fileReader.readAsBinaryString(file);
+      }
+    },
+
+    // 解析csv文件控制器
+    readCsvCon: function (file, data) {
+      data = this.checkEncoding(data);
+      this.readCsv(file, data);
+    },
+
+    // 读取csv文件
+    readCsv: function (file, encoding) {
+      let _this = this;
+      papaparse.parse(file, { encoding: encoding, complete: function (results) {
+        results = results.data;
+        _this.arrToJson(results);
+      }})
+    },
+
+    // 将数据转换为json
+    arrToJson: function (arr) {
+      let first = arr.splice(0, 1)[0];
+      let data = [];
+      for (let i in arr) {
+        if (arr[i].length == first.length) {
+          let obj = {};
+          for (let j in first) {
+            obj[first[j]] = arr[i][j];
+          }
+          data.push(obj);
+        }
+      }
+      this.batchData = data;
+      this.isBatch = true;
+      this.newUserDialog = true;
+      this.$store.commit('changeNowDialog', 'newUser');
+    },
+
+    // csv检查编码
+    checkEncoding: function (base64Str) {
+      var str = atob(base64Str.split(";base64,")[1]);//这种方式得到的是一种二进制串
+      var encoding = jschardet.detect(str);//要用二进制格式
+      encoding = encoding.encoding;
+      if(encoding == "windows-1252") { //有时会识别错误（如UTF8的中文二字）
+        encoding = "ANSI";
+      }
+      return encoding;
+    },
+
+    // 解析excel文件
+    readExcel: function (data) {
+      let excelData = XLSX.read(data, { type: 'binary' }); // 读取完成的数据
+      const sheet2JSONOpts = { defval: '' };
+      let excelJson = XLSX.utils.sheet_to_json(excelData.Sheets[excelData.SheetNames[0]], sheet2JSONOpts);
+      this.isBatch = true;
+      this.batchData = excelJson;
+      this.newUserDialog = true;
+      this.$store.commit('changeNowDialog', 'newUser');
+    },
+
   }
 }
 </script>
@@ -119,5 +212,9 @@ export default {
   display: block;
   width: 400px;
   margin-top: 20px;
+}
+
+.none {
+  display: none;
 }
 </style>

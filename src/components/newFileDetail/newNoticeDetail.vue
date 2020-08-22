@@ -1,3 +1,4 @@
+<!-- 新建知识库文章对话框 -->
 <template>
   <el-dialog title="编辑知识库文章" :visible="dialogVisible" width="50%" top="8vh" :before-close="handleClose">
     <div class="input-area">
@@ -37,7 +38,7 @@
         </div>
         <div class="clear"></div>
       </div>
-      <el-button type="primary" size="small" class="center" @click="submit" :disabled="noticeContent.file_url == '' || noticeContent.content == ''">提交</el-button>
+      <el-button type="primary" size="small" class="center" @click="submit">提交</el-button>
     </div>
   </el-dialog>
 </template>
@@ -86,7 +87,7 @@ export default {
 
     // 文件上传成功  -- 进行绑定
     uploadSuccess: function (data) {
-      this.noticeContent.file_url = data;
+      this.noticeContent.file_url = data.data;
     },
 
     // 提交文章

@@ -1,5 +1,6 @@
+<!-- 添加表头对话框 -->
 <template>
-  <el-dialog title="修改产品属性" append-to-body top="5vh" :visible="dialogVisible" width="40%" :before-close="handleClose">
+  <el-dialog title="修改产品属性" append-to-body top="5vh" :visible="dialogVisible" width="40%" :before-close="handleClose" :close-on-press-escape="false" :close-on-click-modal="false">
     <div class="input-area" :style="{ 'max-height': areaHeight + 'px' }">
       <div class="each-input" v-for="(item, index) in seeHeadData" :key="index">
         <span class="name">{{ item.name + ' :' }}</span>
@@ -52,7 +53,7 @@ export default {
 
     // 关闭对话框
     handleClose: function () {
-      this.$emit('close');
+      this.$emit('close', 'productCatDetail');
     },
 
     // 添加属性列
