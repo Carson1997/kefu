@@ -72,6 +72,15 @@ export default {
     }
   },
 
+  mounted: function () {
+    setTimeout(() => {
+      let modal = document.getElementsByClassName('v-modal')[0];
+      modal.style.zIndex = 1000;
+      let wrapper = document.getElementsByClassName('el-dialog__wrapper')[0];
+      wrapper.style.zIndex = 1001;
+    }, 500);
+  },
+
   methods: {
 
     // 关闭对话框

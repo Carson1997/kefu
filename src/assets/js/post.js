@@ -96,3 +96,8 @@ function filterRes (data) {
     }
   }
 }
+
+// 发送错误
+function sendError () {
+  
+}

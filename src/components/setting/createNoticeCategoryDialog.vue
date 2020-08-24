@@ -71,7 +71,6 @@ export default {
         if (this.fatherCategoryValue != '') {
           send['fid'] = this.fatherCategoryValue
         }
-        console.log(send)
         this.$NORMAL_POST(this.$INTERFACE.NEW_CATEGORY, send).then(this.addCategoryPromise);
       }
     },

@@ -78,7 +78,6 @@ export default {
     initAnswers: function () {
       let arr = [];
       for (let i in this.subjectData.options) {
-        console.log(this.subjectData.options[i])
         if (this.subjectData.options[i]['isAnswer'] == true) {
           arr.push(this.subjectData.options[i]['index']);
         }

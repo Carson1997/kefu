@@ -124,7 +124,6 @@ export default {
 
     // 查看知识库文章详细  请求后的处理函数
     seeNoticePromise: function (res) {
-      console.log(res);
       if (res.data.content != '') {
         this.noticeDataShow = true;
         this.$store.commit('changeNowDialog', 'noticeDetail');

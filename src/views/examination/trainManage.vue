@@ -101,7 +101,6 @@ export default {
     newFolder: function (data) {
       let url = this.$INTERFACE.ADD_TRAIN;
       this.$NORMAL_POST(url, data).then(this.newFolderPromise);
-      console.log(data);
     },
 
     // 新建文件夹  请求后的处理函数

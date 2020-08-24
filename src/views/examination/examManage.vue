@@ -118,7 +118,6 @@ export default {
     newFile: function (data) {
       this.newExamDialogShow = true;
       this.$store.commit('changeNowDialog', 'newExamDialog');
-      console.log(data);
       data['type'] = 1;
       this.examFileData = data;
     },

@@ -1,10 +1,9 @@
 /**
  * 封装一个请求对象
  */
-
-import QueryString from "qs";
-
-const BASE_IP = "/TEST_API_SERVER"; // ip地址
+var ip = window.location.host;
+ip = 'http://' + ip; // 当前的ip地址
+const BASE_IP = process.env.NODE_ENV === "development" ? "/TEST_API_SERVER" : ip; // 请求的ip地址
 const BASE_PROJECT = '/binghuo_information'; // 项目位置
 const API_ADDRESS = '/Backstage'; // api地址
 const REQUEST_URL = BASE_IP + BASE_PROJECT + API_ADDRESS;
@@ -14,6 +13,7 @@ var Interface = {
   LOGIN_CODE: REQUEST_URL + '/user/code', // 获取登录所需的code
   LOIGIN: REQUEST_URL + '/user/login', // 登录获取TOKEN
   RELOGIN: REQUEST_URL + '/user/login_detection', // 重登录获取TOKEN
+  CHANGE_PASS: REQUEST_URL + '/user/password', // 修改密码
   // ******************* 登录网站的接口 *****************************************
 
   // =================== 设置模块的接口 =========================================

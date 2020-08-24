@@ -131,6 +131,12 @@ var Pubilc = {
   alert: function (Vue, title) {
     Vue.$alert(title, '提示', {
       confirmButtonText: '确定',
+      callback: action => {
+        let modal = document.getElementsByClassName('v-modal')[0];
+        setTimeout(() => {
+          modal.style.zIndex = 0;
+        }, 500);
+      }
     });
   },
 

@@ -256,7 +256,6 @@ export default {
 
     // 批量上传试题  请求后的处理函数
     batchAddSubjectPromise: function (res) {
-      console.log(123)
       this.$refs.wordUpload.value = '';
       this.$message({ type: 'success', message: res.info });
       this.getExamContent();

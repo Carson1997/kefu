@@ -4,16 +4,16 @@
     <div class="page-head"> <!-- 头部信息 -->
       <h1 class="page-head-title">{{ pageTitle }}</h1>
       <div class="now-open-page">
-        <div v-for="(item, index) in allOpenPage" :key="index" class="each-all-open-page" v-bind:class="{ 'is-now-open-page': index == nowOpenPage }" @click="switchPage(index, item)">
+        <div v-for="(item, index) in allOpenPage" :key="index" class="each-all-open-page" v-bind:class="{ 'is-now-open-page': nowOpenPage.indexOf(index) > -1 }" @click="switchPage(index, item)">
           <span>{{ item }}</span>
-          <span class="iconfont icon-close" @click="closePage($event,index)"></span>
+          <span class="iconfont icon-close" @click="closePage($event, index)"></span>
         </div>
       </div>
       <div class="page-head-user-name">
         {{ username }}
         <div class="page-head-user-info">
           <div class="page-head-user-info-hello">你好, {{ username }}</div>
-          <div class="each-page-head-function">修改用户信息</div>
+          <div class="each-page-head-function" @click="changepass">修改用户信息</div>
           <div class="each-page-head-function" @click="logout">退出</div>
         </div>
         </div>
@@ -28,18 +28,22 @@
         <span class="iconfont icon-zuo yincang" v-bind:class="{ noShowNavYincang: isShowNav }"></span>
       </div>
     </div>
-    <!-- <keep-alive> -->
-    <router-view class="page-right-content" v-bind:class="{ noShowNavRightContent: isShowNav }"></router-view>
-    <!-- </keep-alive> -->
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive" class="page-right-content" v-bind:class="{ noShowNavRightContent: isShowNav }"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive" class="page-right-content" v-bind:class="{ noShowNavRightContent: isShowNav }"></router-view>
 
     <!-- 上传的文件 -->
     <uploadProgress class="uploadProgress" :class="{ showUploadProgress: showUploadProgress == true }"></uploadProgress>
+    <!-- 修改密码 -->
+    <changePass v-if="changePassShow" @submit="changePassHandle"></changePass>
   </div>
 </template>
 
 <script>
 import '..//assets/css/iconfont.css';
 import uploadProgress from '../components/upload/uploadProgress'
+import changePass from '../components/fileDetail/changePass';
 export default {
   name: 'Index',
 
@@ -80,15 +84,34 @@ export default {
     }
   },
 
-  components: { uploadProgress },
+  components: { uploadProgress, changePass },
 
   data: function () {
     return {
       isShowNav: false, // 是否显示导航栏
+      changePassShow: false, // 是否显示密码框
     }
   },
 
   methods: {
+
+    // 修改密码
+    changepass: function () {
+      this.changePassShow = true;
+      this.$store.commit('changeNowDialog', 'changePass');
+    },
+
+    // 修改密码  处理函数
+    changePassHandle: function (data) {
+      let url = this.$INTERFACE.CHANGE_PASS;
+      this.$NORMAL_POST(url, data).then(this.changePassHandlePromise);
+    },
+
+    // 修改密码  请求后的处理函数
+    changePassHandlePromise: function (res) {
+      this.changePassShow = false;
+      this.$store.commit('changeNowDialog', 'changePass', 2);
+    },
 
     // 切换显示导航栏
     switchNav: function () {
@@ -97,10 +120,18 @@ export default {
 
     // 切换模块
     switchPage: function (url, name) {
+      this.$route.meta.keepAlive = true;
       if (this.allOpenPage[url] == undefined) { // 当前页面没打开过
         let data = JSON.parse(JSON.stringify(this.allOpenPage));
         data[url] = name;
         this.$store.commit('changeNormalValue', { name: 'ALL_OPEN_PAGE', value: JSON.parse(JSON.stringify(data)) });
+      }
+      if (url == '/dataStatistics' || url == '/examination') {
+        let child = url == '/dataStatistics' ? 'NOW_DATASTATISTICS_ROUTE' : 'NOW_EXAMINATION';
+        child = this.$store.state[child];
+        if (child != '') {
+          url = url + '/' + child;
+        }
       }
       this.$store.commit('changeNormalValue', { name: 'NOW_OPEN_PAGE', value: url });
       this.$router.replace(url);
@@ -111,13 +142,26 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.allOpenPage));
       delete obj[url];
       this.$store.commit('changeNormalValue', { name: 'ALL_OPEN_PAGE', value: JSON.parse(JSON.stringify(obj)) });
+      if (url == '/dataStatistics' || url == '/examination') {
+        this.$route.meta.keepAlive = false;
+        let child = url == '/dataStatistics' ? 'NOW_DATASTATISTICS_ROUTE' : 'NOW_EXAMINATION';
+        this.$store.commit('changeNormalValue', { name: child, value: '' });
+        this.$router.replace(url);
+      }
       this.$route.meta.keepAlive = false; // 设置页面不缓存
       if (Object.keys(obj).length > 0) {
         let keys = Object.keys(obj);
         this.$store.commit('changeNormalValue', { name: 'NOW_OPEN_PAGE', value: keys[keys.length - 1] });
-        this.$router.replace(keys[keys.length - 1])
+        if (keys[keys.length - 1] == '/dataStatistics' || keys[keys.length - 1] == '/examination') {
+          let child = keys[keys.length - 1] == '/dataStatistics' ? 'NOW_DATASTATISTICS_ROUTE' : 'NOW_EXAMINATION';
+          child = this.$store.state[child];
+          let url = child == '' ? keys[keys.length - 1] : keys[keys.length - 1] + '/' + child;
+          this.$router.replace(url);
+        } else {
+          this.$router.replace(keys[keys.length - 1]);
+        }
       } else {
-        this.$router.replace('/')
+        this.$router.replace('/');
       }
       event.stopPropagation();
     },
@@ -341,9 +385,11 @@ export default {
   border-top-right-radius: 10px;
   z-index: 10000;
   transition: all .5s;
+  visibility: hidden;
 }
 
 .showUploadProgress {
   bottom: 0px;
+  visibility: visible;
 }
 </style>

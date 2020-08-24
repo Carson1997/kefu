@@ -3,7 +3,10 @@
     <div class="module-head">
       <div class="each-module-head" v-for="(item, index) in moduleFunctionsShow" :key="index" @click="changeFunction(item.url)" v-bind:class="{'active': item.url == nowFunction}"> {{ item.name }} </div>
     </div>
-    <router-view class="module-detail"></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive" class="module-detail"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive" class="module-detail"></router-view>
   </div>
 </template>
 
@@ -40,6 +43,7 @@ export default {
 
     // 切换功能点
     changeFunction: function (url) {
+      this.$store.commit('changeNormalValue', { name: 'NOW_EXAMINATION', value: url });
       this.nowFunction = url;
       this.$router.replace('/examination/' + url);
     }

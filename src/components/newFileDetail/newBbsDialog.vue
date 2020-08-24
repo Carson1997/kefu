@@ -56,6 +56,12 @@ export default {
     this.getGroup();
     this.getCate();
     this.getTeacher();
+    setTimeout(() => {
+      let modal = document.getElementsByClassName('v-modal')[0];
+      modal.style.zIndex = 1000;
+      let wrapper = document.getElementsByClassName('el-dialog__wrapper')[0];
+      wrapper.style.zIndex = 1001;
+    }, 500);
   },
 
   data: function () {
@@ -120,7 +126,7 @@ export default {
     // 提交创建帖子
     submit: function () {
       if (this.title == '') {
-        this.$PUBILC.alert(this, '请输入帖子名称');
+        this.$PUBILC.alert(this, '请输入帖子名称');        
         return false;
       }
       if (this.groupValue == '') {

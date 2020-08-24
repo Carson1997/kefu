@@ -38,7 +38,6 @@ export default {
     cateData: function () { // 类目数据
       let arr = this.tableData.slice(0);
       arr.unshift({ id: '0', name: '无父级' });
-      console.log(arr);
       return arr;
     }
   },

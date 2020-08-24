@@ -64,7 +64,6 @@ export default {
 
     // 提交修改
     submit: function () {
-      console.log(this.rowData)
       for (let i in this.rowData) {
         if (this.rowData[i]['value'] == '') {
           this.$PUBILC.alert(this, '请输入必须的内容或者等待图片上传成功后再上传');
