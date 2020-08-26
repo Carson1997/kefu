@@ -21,6 +21,7 @@ export default {
         { url: 'trainManage', name: '培训管理', status: 2 },
         { url: 'examManage', name: '考试管理', status: 2 },
         { url: 'examHistory', name: '学生历史考试管理', status: 2 },
+        { url: 'importantInformation', name: '系统重要信息', status: 2 },
       ],
       nowFunction: '', // 当前的功能点
     }

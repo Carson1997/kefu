@@ -20,7 +20,6 @@ export default {
 
   computed: {
     dialogVisible: function () {
-      console.log(this.$store.state.NOW_OPEN_DIALOG)
       if (this.$store.state.NOW_OPEN_DIALOG == 'changePass') {
         return true;
       } else {

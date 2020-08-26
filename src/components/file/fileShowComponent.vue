@@ -15,13 +15,17 @@
               <img src="../../../public/img/file.png" v-if="item.file_type == 1">
             </div>
             <span class="file-cursor" @click="switchFile('next', item)">{{ item.name }}</span>
+            <div class="img-sign hot-area" v-if="rankingType != '' && rankingType != 'topping'">
+              <img class="hot-img" src="../../../public/img/hot.png" alt="">
+              {{ item[rankingType] }}
+            </div>
           </div>
           <!-- <div class="each-file-part path"><span class="file-cursor" @click="switchFile('pre', item)">{{ item.path[item.path.length - 2] }}</span></div> -->
           <div class="each-file-part operation" v-if="fileAuth == true">
             <!-- <el-button type="primary" size="mini" plain @click="editFileName(item)">重命名</el-button> -->
-            <el-button v-if="customButton" type="primary" size="mini" plain @click="customClick(item, customButton.order)">{{ customButton.name }}</el-button>
-            <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1 && isCanEdit == true && item.isCanEdit != false">编辑文件</el-button>
-            <el-button class="red" type="danger" plain size="mini" @click="deleteFile(item.id)">删除</el-button>
+            <el-button v-if="customButton && item.file_type == 1" type="primary" size="mini" plain @click="customClick(item, customButton.order)">{{ customButton.name }}</el-button>
+            <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1 && isCanEdit == true && item.isCanEdit != false" :disabled="rankingType != ''">编辑文件</el-button>
+            <el-button class="red" type="danger" plain size="mini" @click="deleteFile(item.id)" :disabled="rankingType != ''">删除</el-button>
           </div>
           <div class="clear"></div>
         </div>
@@ -64,6 +68,10 @@ export default {
     customButton: { // 自定义按钮
       type: Object,
       required: false,
+    },
+    rankingType: { // 排行类型
+      type: String,
+      required: false,
     }
   },
 
@@ -79,6 +87,7 @@ export default {
         path = path.join('/');
         this.$emit('switchFile', path);
       } else if (data.file_type == 1) {
+        data[this.rankingType] = parseFloat(data[this.rankingType]) + 1;
         this.$emit('seeFile', { fid: data.id });
       }
     },
@@ -169,6 +178,7 @@ export default {
 
 .file-cursor {
   cursor: pointer;
+  float: left;
 }
 
 .file-cursor:hover {
@@ -182,6 +192,7 @@ export default {
 
 .file-area .each-file .name {
   padding-left: 15px;
+  float: left;
 }
 
 .file-area .each-file .path {
@@ -213,6 +224,17 @@ export default {
   display: flex;
   float: left;
   align-items: center;
+}
+
+.hot-area {
+ margin-left: 30px;
+ color: indianred;
+ font-weight: 500;
+}
+
+.hot-img {
+  height: 20px;
+  margin-right: 10px;
 }
 
 </style>

@@ -1,6 +1,6 @@
 <!-- 产品参数详细表格 -->
 <template>
-  <el-dialog title="产品类目详情" :visible="dialogVisible" width="98%" top="3vh" :before-close="handleClose">
+  <el-dialog title="产品参数详情" :visible="dialogVisible" width="98%" top="3vh" :before-close="handleClose">
     <div id="productDialog" class="dialog-area" v-bind:style="{ height: dialogHeight + 'px' }">
       <div class="control-area">
         <el-button class="each-button" type="primary" plain size="small" @click="editHead" v-if="editAuth == true">编辑现有表头</el-button>

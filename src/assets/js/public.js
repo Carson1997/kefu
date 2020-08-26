@@ -64,6 +64,7 @@ var Pubilc = {
 
   // 将数组递归成父子级别的形式
   changeArrToHierarchy: function (data) {
+    data = JSON.parse(JSON.stringify(data));
     let returnObj = {}
 		let parents = data.filter(value => {
 			value['label'] = value['name'];

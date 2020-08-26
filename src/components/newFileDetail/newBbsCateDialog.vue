@@ -10,7 +10,7 @@
       <div class="each-input">
         <span class="name">所属父级类目:</span>
         <el-select class="value" v-model="fatherCate" placeholder="请选择">
-          <el-option v-for="(item, index) in cateOptions" :key="index" :label="item.name" :value="item.id"></el-option>
+          <el-option v-for="(item, index) in showCateOptions" :key="index" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </div>
       <div class="each-input">
@@ -35,7 +35,16 @@ export default {
       } else {
         return false;
       }
-    }
+    },
+
+    showCateOptions: function () { // 展示的父级分类
+      this.fatherCate = '';
+      let arr = this.cateOptions.filter(item => {
+        return item.group_id == this.groupValue;
+      })
+      arr.unshift({ id: '0', name: '无父级' });
+      return arr;
+    },
   },
 
   data: function () {

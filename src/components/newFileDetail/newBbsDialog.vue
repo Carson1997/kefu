@@ -15,7 +15,7 @@
       <div class="each-input">
         <span class="name">分类:</span>
         <el-select class="value" v-model="cateValue" placeholder="请选择分类">
-          <el-option v-for="item in cateOptions" :key="item.id" :label="item.path" :value="item.id"></el-option>
+          <el-option v-for="item in showCateOptions" :key="item.id" :label="item.path" :value="item.id"></el-option>
         </el-select>
       </div>
       <div class="each-input">
@@ -49,6 +49,14 @@ export default {
         return false;
       }
     },
+
+    showCateOptions: function () { // 展示的分类  根据群组
+      this.cateValue = '';
+      let arr = this.cateOptions.filter(item => {
+        return item.group_id == this.groupValue;
+      })
+      return arr;
+    }
 
   },
 

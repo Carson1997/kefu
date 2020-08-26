@@ -1,7 +1,7 @@
 <template>
   <div class="file-folder-component">
-    <filePathComponent :fileAuth="fileAuth" @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
-    <fileShowComponent @customClick="customClick" :customButton="customButton" @dragend="dragend" @dragstart="dragstart" :isCanDrag="isCanDrag" :isCanEdit="fileIsCanEdit" @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
+    <filePathComponent @fileArrange="fileArrange" :fileAuth="fileAuth" @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
+    <fileShowComponent :rankingType="rankingType" @customClick="customClick" :customButton="customButton" @dragend="dragend" @dragstart="dragstart" :isCanDrag="isCanDrag" :isCanEdit="fileIsCanEdit" @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
     <newfileDialog @closeHandle="closeHandle" @newFolderApply="newFolderApply" v-if="newfileDialog" :nowFile="fileShowData" :editFileData="editFileData"></newfileDialog>
   </div>
 </template>
@@ -55,6 +55,7 @@ export default {
       fatherSearchInput: '', // 文件夹搜索的文字
       newfileDialog: false, // 新建文件框是否显示
       editFileData: '', // 目前修改的数据
+      rankingType: '', // 文件排行的根据
     }
   },
 
@@ -219,6 +220,47 @@ export default {
     // 自定义点击
     customClick: function (data) {
       this.exposeToBusiness(data.order, data.data);
+    },
+
+    // 改变文件排序
+    fileArrange: function (order) {
+      this.rankingType = order;
+      let arr = this.filterFile();
+      let data;
+      if (order == 'all') {
+        this.rankingType = '';
+        this.initFileData();
+      }else if (order == 'topping') {
+        data = this.filterTopFile(arr);
+        this.fileShowData = data;
+      } else if (order == 'week_click' || order == 'month_click' || order == 'total_click') {
+        data = this.fileRanking(arr, order);
+        this.fileShowData = data;
+      }
+    },
+
+    // 过滤文件
+    filterFile: function () {
+      let arr = this.fileData.filter(item => {
+        return item.file_type == '1';
+      })
+      return arr;
+    },
+
+    // 过滤置顶文件
+    filterTopFile: function (arr) {
+      let data = arr.filter(item => {
+        return item.top == '1'
+      })
+      return data;
+    },
+
+    // 文件点击次数排行
+    fileRanking: function (data, attr) {
+      data.sort(function (a, b) {
+        return b[attr] - a[attr];
+      })
+      return data;
     },
 
     // 暴露给业务的接口

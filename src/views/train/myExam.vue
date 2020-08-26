@@ -2,18 +2,25 @@
   <div class="my-exam" id="myExam">
     <el-table class="table-area" :data="tableData" border style="width: 100%" :height="tableHeight">
       <el-table-column prop="name" label="试卷名" align="center"></el-table-column>
+      <el-table-column prop="score" label="我的分数" align="center"></el-table-column>
       <el-table-column prop="score_line" label="及格分数线" align="center"></el-table-column>
       <el-table-column prop="passing" label="通过后获得学分" align="center"></el-table-column>
+      <el-table-column label="考试时长" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.countdown + '分钟' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="date" label="发布时间" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" plain @click="takeExam(scope.row.id)" v-if="scope.row.review == 1">参加考试</el-button>
-          <span v-if="scope.row.review == 2">不及格, 待安排补考</span>
-          <el-button type="warning" size="mini" plain @click="takeExam(scope.row.id)" v-if="scope.row.review == 3">参加补考</el-button>
+          <el-button type="primary" size="mini" plain @click="takeExam(scope.row)" v-if="scope.row.review == 0">参加考试</el-button>
+          <span v-if="scope.row.review == 1">已过关</span>
+          <span v-if="scope.row.review == 2">不及格, 等待补考</span>
+          <el-button type="warning" size="mini" plain @click="takeExam(scope.row)" v-if="scope.row.review == 3">参加补考</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <takeExam v-if="takeExamShow" :examData="examData" @postExam="postExam"></takeExam>
+    <takeExam v-if="takeExamShow" :examTime="examTime" :examData="examData" @postExam="postExam"></takeExam>
     <newExamDetail @closeExamDetail="closeExamDetail" v-if="newExamDetailShow" :fatherExamData="postExamData" :examAuth="false"></newExamDetail>
   </div>
 </template>
@@ -35,6 +42,7 @@ export default {
       examId: '', // 考试id
       postExamData: [], // 提交后的考试数据
       newExamDetailShow: false, // 是否显示试卷详细对话框
+      examTime: '', // 考试时长
     }
   },
 
@@ -56,10 +64,11 @@ export default {
     },
 
     // 参加考试
-    takeExam: function (id) {
+    takeExam: function (data) {
+      this.examTime = data.countdown; // 考试时长
       let url = this.$INTERFACE.EXAM_DETAIL;
-      let send = { fid: id };
-      this.examId = id;
+      let send = { fid: data.id };
+      this.examId = data.id;
       this.$NORMAL_POST(url, send).then(this.takeExamPromise);
     },
 

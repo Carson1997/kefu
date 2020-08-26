@@ -2,14 +2,14 @@
   <div id="uploadData" class="upload-data">
     <div class="control-area"> <!-- 控制区域 -->
       <el-button type="primary" plain size="small" @click="uploadButtonLis">上传文件</el-button>
-      <input class="none" type="file" ref="uploadFile" @change="uploadFileChange">
+      <input class="none" type="file" ref="uploadFile" @change="uploadFileChange" accept=".csv, .xls, .xlsx">
     </div>
 
     <div class="upload-area" v-if="tableHead.length > 0"> <!-- 控制区域 -->
       <el-select class="dateSelect" v-model="dateType" placeholder="日期类型">
         <el-option v-for="item in dateTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
-      <el-date-picker class="dateSelect" v-model="date" :type="dateType == 0 ? 'date' : 'month'" format="" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+      <el-date-picker class="dateSelect" v-model="date" :type="dateType == 1 ? 'date' : 'month'" format="" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
       <el-button type="success" plain size="small" @click="submit">确认上传</el-button>
     </div>
 

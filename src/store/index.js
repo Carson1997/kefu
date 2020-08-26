@@ -15,7 +15,7 @@ export default new Vuex.Store({
     PAGE_LEFT_NAV: { // 页面左侧导航
       '/dataStatistics': { index: '1', name: '数据统计', icon: 'icon-icon-test', url: '/dataStatistics' },
       '/productInquiry': { index: '2', name: '产品查询', icon: 'icon-chanpin', url: '/productInquiry' },
-      '/postBar': { index: '3', name: '贴吧', icon: 'icon-Fillx', url: '/postBar' },
+      '/postBar': { index: '3', name: '知识反馈', icon: 'icon-Fillx', url: '/postBar' },
       '/examination':{ index: '4', name: '教学模块', icon: 'icon-jiaoxuejiaoyu', url: '/examination' },
       '/train':{ index: '5', name: '学习模块', icon: 'icon-xuexi', url: '/train' },
       '/notice':{ index: '6', name: '知识库', icon: 'icon-zhishiku', url: '/notice' },
@@ -87,7 +87,7 @@ export default new Vuex.Store({
       state.PAGE_LEFT_NAV = { // 页面左侧导航
         '/dataStatistics': { index: '1', name: '数据统计', icon: 'icon-icon-test', url: '/dataStatistics' },
         '/productInquiry': { index: '2', name: '产品查询', icon: 'icon-chanpin', url: '/productInquiry' },
-        '/postBar': { index: '3', name: '贴吧', icon: 'icon-Fillx', url: '/postBar' },
+        '/postBar': { index: '3', name: '知识反馈', icon: 'icon-Fillx', url: '/postBar' },
         '/examination':{ index: '4', name: '教学模块', icon: 'icon-jiaoxuejiaoyu', url: '/examination' },
         '/train':{ index: '5', name: '学习模块', icon: 'icon-xuexi', url: '/train' },
         '/notice':{ index: '6', name: '知识库', icon: 'icon-zhishiku', url: '/notice' },

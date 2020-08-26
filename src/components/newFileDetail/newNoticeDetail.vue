@@ -15,6 +15,14 @@
       </div>
 
       <div class="each-input">
+        <span class="name">是否置顶: </span>
+        <el-select class="value" v-model="noticeContent.top" placeholder="请选择是否置顶">
+          <el-option v-for="item in topingOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+        <div class="clear"></div>
+      </div>
+
+      <div class="each-input">
         <span class="name">文章类型: </span>
         <el-select class="value" v-model="noticeContent.file_type" placeholder="请选择文章类型">
           <el-option v-for="item in fileOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -57,6 +65,10 @@ export default {
         { id: 0, name: '普通文章' },
         { id: 1, name: '可预览性文章' },
       ],
+      topingOptions: [ // 置顶类型
+        { id: '0', name: '不置顶' },
+        { id: '1', name: '置顶' },
+      ]
     }
   },
 
@@ -121,6 +133,11 @@ export default {
         return false;
       }
       send['keyword'] = this.noticeContent.keyword;
+      if (this.noticeContent.top === '') {
+        this.$PUBILC.alert(this, '请选择是否置顶');
+        return false;
+      }
+      send['top'] = this.noticeContent.top;
       if((this.noticeContent.file_type == 0 && content == '') || (this.noticeContent.file_type == 1 && this.noticeContent.file_url == '')) {
         this.$PUBILC.alert(this, '请输入文章内容或者选择文件');
         return false;

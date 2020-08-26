@@ -2,7 +2,7 @@
   <div id="trainManage" class="train-manage">
     <fileFolderComponent :customButton="customButton" :fileIsCanEdit="false" @exposeToBusiness="exposeToBusiness" class="train-file" :fileData="fileData" :fileAuth="fileAuth"></fileFolderComponent>
     <newTrainSourceDialog @next="newExam" :trainData="trainData" v-if="newTrainSourceDialogShow"></newTrainSourceDialog>
-    <newExamDialog v-if="newExamDialogShow" @newFileHandle="newExamHandle" :examFileData="trainData"></newExamDialog>
+    <newExamDialog @close="closeNewExamDialog" v-if="newExamDialogShow" @newFileHandle="newExamHandle" :examFileData="trainData"></newExamDialog>
     <newExamDetail :fatherExamData="newExamDetailData" @closeExamDetail="closeExamDetail" v-if="newExamDetailShow" :examId="trainExamId" :examAuth="examAuth"></newExamDetail>
     <seeScoreDialog @reExam="reExam" @close="closeSeeScoreDialog" @seeExamDetail="seeExamDetail" :v-if="seeScoreDialogShow" :tableData="scoreData"></seeScoreDialog>
   </div>
@@ -124,6 +124,12 @@ export default {
       this.$store.commit('changeNowDialog', 'newExamDialog');
     },
 
+    // 关闭新建考试对话框
+    closeNewExamDialog: function () {
+      this.newExamDialogShow = false;
+      this.$store.commit('changeNowDialog', '');
+    },
+
     // 新建考试
     newExamHandle: function (data) {
       let url = this.$INTERFACE.NEW_EXAMS;
@@ -146,6 +152,7 @@ export default {
     // 新建培训  请求后的处理函数
     newTrainPromise: function (res) {
       this.getTrainData();
+      this.closeNewExamDialog();
       this.newExamDetailShow = true;
       this.$store.commit('changeNowDialog', 'newExamDetail');
     },
@@ -163,6 +170,7 @@ export default {
           _this.$store.commit('changeNowDialog', '');
         }).catch();
       } else {
+        this.newExamDetailShow = false;
         this.$store.commit('changeNowSecDialog', '');
       }
       

@@ -28,6 +28,23 @@
         <span class="iconfont icon-zuo yincang" v-bind:class="{ noShowNavYincang: isShowNav }"></span>
       </div>
     </div>
+
+    <div class="information" v-bind:class="{ showImfor: showAllImfor }"> <!-- 重要通知 -->
+    <div class="information-controller" @click="changeInforShow">
+      <span class="iconfont icon-information"></span>
+    </div>
+      <h2 class="information-head">所有重要通知</h2>
+      <div class="all-information">
+        <div class="each-information" v-for="(item, index) in information" :key="index">
+          <h3 class="each-information-title">
+            <span>{{ item.name }}</span>
+            <el-button type="text" class="right" @click="sesInformationHandle(item)">查看</el-button>
+          </h3>
+          <p class="each-information-body" v-html="item.content"></p>
+        </div>
+      </div>
+    </div>
+
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive" class="page-right-content" v-bind:class="{ noShowNavRightContent: isShowNav }"></router-view>
     </keep-alive>
@@ -36,7 +53,9 @@
     <!-- 上传的文件 -->
     <uploadProgress class="uploadProgress" :class="{ showUploadProgress: showUploadProgress == true }"></uploadProgress>
     <!-- 修改密码 -->
-    <changePass v-if="changePassShow" @submit="changePassHandle"></changePass>
+    <changePass @close="closeChangePass" v-if="changePassShow" @submit="changePassHandle"></changePass>
+    <!-- 查看重要通知 -->
+    <seeImformation @close="closeSeeImformation" v-if="seeImformationShow" :informationData="seeInformationData"></seeImformation>
   </div>
 </template>
 
@@ -44,6 +63,7 @@
 import '..//assets/css/iconfont.css';
 import uploadProgress from '../components/upload/uploadProgress'
 import changePass from '../components/fileDetail/changePass';
+import seeImformation from '../components/fileDetail/seeImformation';
 export default {
   name: 'Index',
 
@@ -84,16 +104,30 @@ export default {
     }
   },
 
-  components: { uploadProgress, changePass },
+  components: { uploadProgress, changePass, seeImformation },
 
   data: function () {
     return {
       isShowNav: false, // 是否显示导航栏
       changePassShow: false, // 是否显示密码框
+      information: [], // 显示的通知
+      showAllImfor: false, // 是否显示所有的通知
+      seeImformationShow: false, // 是否显示重要通知
+      seeInformationData: [], // 查看的重要数据
     }
   },
 
+  mounted: function () {
+    this.getInformation();
+  },
+
   methods: {
+
+    // 关闭修改密码对话框
+    closeChangePass: function () {
+      this.changePassShow = false;
+      this.$store.commit('changeNowDialog', '');
+    },
 
     // 修改密码
     changepass: function () {
@@ -171,6 +205,42 @@ export default {
       this.$PUBILC.clearVuex(this);
       this.$PUBILC.clearSession(this);
       this.$router.replace('/login');
+    },
+
+    // 获取重要通知
+    getInformation: function () {
+      let url = this.$INTERFACE.ALL_IMPORTANT_NEWS;
+      this.$NORMAL_POST(url).then(this.getInformationPromise);
+    },
+
+    // 获取重要通知  请求后的处理函数
+    getInformationPromise: function (res) {
+      for (let i in res.data) {
+        res.data[i].content = this.$PUBILC.html_decode(res.data[i].content);
+      }
+      this.information = res.data;
+      this.seeImformationShow = true;
+      this.$store.commit('changeNowDialog', 'seeImformation');
+      this.seeInformationData = res.data;
+    },
+
+    // 查看重要通知
+    sesInformationHandle: function (data) {
+      this.seeImformationShow = true;
+      this.$store.commit('changeNowDialog', 'seeImformation');
+      this.seeInformationData = [data];
+    },
+
+    // 关闭查看重要通知
+    closeSeeImformation: function () {
+      this.seeImformationShow = false;
+      this.$store.commit('changeNowDialog', '');
+      this.seeInformationData = [];
+    },
+
+    // 更改显示全部重要通知
+    changeInforShow: function () {
+      this.showAllImfor = !this.showAllImfor;
     }
   }
 }
@@ -346,6 +416,34 @@ export default {
   transition: all .3s;
 }
 
+.information-controller {
+  position: absolute;
+  width: 30px;
+  height: 55px;
+  background: #f9f9f7;
+  left: -30px;
+  top: 40%;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  box-shadow: -1px 0 1px #e7e7e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .3s;
+  font-size: 24px;
+}
+
+.icon-information {
+  margin-right: 0px !important;
+  color: black;
+}
+
+.information-controller:hover {
+  box-shadow: -1px 0 2px #adadad;
+  color: black;
+}
+
 .page-left-nav .page-left-nav-controller:hover {
   box-shadow: 1px 0 2px #adadad;
   color: black;
@@ -366,6 +464,7 @@ export default {
   height: calc(100% - 45px);
   float: left;
   transition: all .5s;
+  position: relative;
 }
 
 .noShowNavRightContent {
@@ -391,5 +490,63 @@ export default {
 .showUploadProgress {
   bottom: 0px;
   visibility: visible;
+}
+
+.information {
+  z-index: 1000;
+  width: 300px;
+  height: calc(100% - 45px);
+  background: white;
+  position: absolute;
+  top: 45px;
+  right: -300px;
+  box-shadow: 0 0 3px lightgrey;
+  background: #f9f9f7;
+  transition: all .5s;
+}
+
+.showImfor {
+  right: 0 !important;
+}
+
+.information .information-head {
+  font-size: 16px;
+  font-weight: 400;
+  color: #4b4b4b;
+  padding: 5px 10px;
+  border-bottom: solid 1px #e6e6e6;
+}
+
+.all-information {
+  width: 100%;
+  height: calc(100% - 33px);
+  overflow: auto;
+  padding: 10px;
+}
+
+.each-information {
+  width: 100%;
+  border-bottom: solid 1px #d8d8d8;
+  padding: 10px 0;
+}
+
+.each-information-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.each-information-body {
+  width: 100%;
+  height: 100px;
+  overflow: auto;
+  padding: 5px;
+} 
+
+.right {
+  float: right;
+  margin-right: 30px;
+  padding-top: 5px !important;
+  padding-bottom: 0 !important;
 }
 </style>

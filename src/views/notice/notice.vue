@@ -22,6 +22,7 @@ export default {
   data: function() {
     return {
       fileData: [], // 文件夹的数据
+      fileAllData: [], // 所有的文件夹数据
       noticeContent: {}, // 文章内容
       noticeDataDetail: {}, // 查看的文章详细内容
       noticeDataShow: false, // 是否显示文章对话框
@@ -50,6 +51,7 @@ export default {
     // 获取知识库数据  请求后的处理函数
     getNoticeDetailDataPromise: function (res) {
       this.fileData = res.data;
+      this.fileAllData = res.data;
     },
 
     // 组件暴露到业务层的方法
@@ -87,7 +89,7 @@ export default {
     
     // 编辑后的处理函数
     newNoticeHandle: function (res) {
-      let obj = { fid: res.data.id, title: '', keyword: '', file_url: '', file_type: 0 };
+      let obj = { fid: res.data.id, title: '', keyword: '', file_url: '', file_type: 0, top: 0 };
       this.noticeContent = obj;
       this.$message({ type: 'success', message: res.info });
       this.getNoticeDetailData();
@@ -104,6 +106,7 @@ export default {
       this.$message({ type: 'success', message: res.info });
       this.$store.commit('changeNowDialog', '');
       this.$store.commit('changeNormalValue', { name: 'EDIT_CONTENT', value: '' });
+      this.getNoticeDetailData();
     },
 
     // 删除知识库文章
@@ -151,7 +154,7 @@ export default {
 
     // 编辑文件  请求后的处理函数
     editFilePromise: function (res) {
-      let obj = { fid: res.needToRes.fid, id: res.data.id, title: res.data.title, keyword: res.data.keyword, file_url: res.data.file_url, file_type: 1 };
+      let obj = { fid: res.needToRes.fid, id: res.data.id, title: res.data.title, keyword: res.data.keyword, file_url: res.data.file_url, file_type: 1, top: res.data.top };
       this.$store.commit('changeNormalValue', { name: 'EDIT_CONTENT', value: this.$PUBILC.html_decode(res.data.content) });
       if (res.data.file_url == '' ) {
         obj.file_type = 0;
@@ -170,10 +173,18 @@ export default {
   height: 100%;
   overflow: auto;
   padding: 20px 40px;
+  position: relative;
 }
 
 .notice-folder {
   width: 100%;
   height: 100%;
+}
+
+.file-arrange {
+  position: absolute;
+  top: 25px;
+  right: 50px;
+  z-index: 100;
 }
 </style>

@@ -3,7 +3,7 @@
     <!-- 控制区域 -->
     <div class="control-area">
       <el-button v-if="cateAuth" class="cate-button" type="primary" plain size="small" @click="cateManage">管理分类</el-button>
-      <el-button type="success" size="small" plain @click="newBbs">创建新的帖子</el-button>
+      <el-button type="success" size="small" plain @click="newBbs" v-if="!cateAuth">创建新的帖子</el-button>
       <el-input class="search-input" placeholder="请输入搜索内容" v-model="searchInput">
         <template template slot="append">
           <span class="el-icon-search"></span>
@@ -13,14 +13,19 @@
     <!-- 表格区域 -->
     <el-table :data="tableDataShow" style="width: 100%" :height="tableHeight" border class="table-area">
       <el-table-column prop="title" label="帖子名称" align="center"></el-table-column>
+      <el-table-column label="帖子分类" align="center">
+        <template slot-scope="scope">
+          {{ ALL_CATE_OBJ[scope.row.cat_id] }}
+        </template>
+      </el-table-column>
       <el-table-column prop="teacher" label="指定应答人" align="center"></el-table-column>
       <el-table-column prop="content" label="简述" align="center">
         <template slot-scope="scope">
           <div v-html="scope.row.content"></div>
         </template>
       </el-table-column>
-      <el-table-column prop="date" label="创建时间" align="center"></el-table-column>
-      <el-table-column prop="update_time" label="更新时间" align="center"></el-table-column>
+      <!-- <el-table-column prop="date" label="创建时间" align="center"></el-table-column> -->
+      <!-- <el-table-column prop="update_time" label="更新时间" align="center"></el-table-column> -->
       <el-table-column label="状态" align="center">
         <template slot-scope="scope">
           {{ scope.row.status == 0 ? '新提交' : scope.row.status == 1 ? '管理员已反馈' : '等待管理员反馈' }}
@@ -57,6 +62,7 @@ export default {
       newBbsDialogShow: false, // 是否显示创建新的帖子
       bbsDetailDialogShow: false, // 是否显示帖子详细
       nowBbsId: '', // 当前编辑的bbsid
+      ALL_CATE_OBJ: {}, // 所有的类目
     }
   },
 
@@ -74,7 +80,7 @@ export default {
         return this.tableData;
       } else {
         let arr = this.tableData.filter(item => {
-          return item.name.indexOf(this.searchInput) > -1 ||
+          return item.title.indexOf(this.searchInput) > -1 ||
                 item.teacher.indexOf(this.searchInput) > -1 ||
                 item.content.indexOf(this.searchInput) > -1;
         })
@@ -84,10 +90,26 @@ export default {
   },
 
   mounted: function () {
-    this.getBbsData();
+    this.getAllCate();
   },
 
   methods: {
+
+    // 获取所有bbs类目
+    getAllCate: function () {
+      let url = this.$INTERFACE.BBS_ALL_CATE;
+      this.$NORMAL_POST(url).then(this.getAllCatePromise);
+    },
+
+    // 获取所有bbs类目  请求后的处理函数
+    getAllCatePromise: function (res) {
+      let obj = {};
+      for (let i in res.data) {
+        obj[res.data[i].id] = res.data[i].path;
+      }
+      this.ALL_CATE_OBJ = obj;
+      this.getBbsData();
+    },
 
     // 打开分类管理框
     cateManage: function () {

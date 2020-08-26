@@ -75,6 +75,9 @@ var Interface = {
   REEXAM: REQUEST_URL + '/Examination/review', // 安排补考
   ALL_STUDENT_SCORE: REQUEST_URL + '/Examination/user', // 所有学生的考试情况
   STUDENT_SCORE_DETAIL: REQUEST_URL + '/Examination/user_examination', // 所有学生的考试详细情况
+  ADD_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_add_update', // 发布重要通知
+  ALL_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_list', // 所有的重要通知
+  DEL_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_del', // 删除重要通知
   // ****************** 教学模块 *****************************************
 
   // ****************** bbs *****************************************

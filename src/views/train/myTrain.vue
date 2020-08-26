@@ -2,17 +2,20 @@
   <div class="my-train" id="myTrain">
     <el-table class="table-area" :data="tableData" border style="width: 100%" :height="tableHeight">
       <el-table-column prop="name" label="培训名" align="center"></el-table-column>
+      <el-table-column prop="score" label="测试分数" align="center"></el-table-column>
+      <el-table-column prop="score_line" label="分数线" align="center"></el-table-column>
       <el-table-column prop="date" label="时间" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="mini" @click="takeTrain(scope.row)" v-if="scope.row.review == 1">参加学习</el-button>
+          <el-button type="primary" plain size="mini" @click="takeTrain(scope.row)" v-if="scope.row.review == 0">参加学习</el-button>
+          <span v-if="scope.row.review == 1">已过关</span>
           <span v-if="scope.row.review == 2">不及格, 待安排补考</span>
           <el-button type="primary" plain size="mini" @click="takeTrain(scope.row)" v-if="scope.row.review == 3">参加补考</el-button>
         </template>
       </el-table-column>
     </el-table>
     <myTrainDetail @finishTrain="finishTrain" v-if="myTrainDetailShow" :trainData="trainData"></myTrainDetail>
-    <takeExam v-if="takeExamShow" :examData="examData" @postExam="postExam"></takeExam>
+    <takeExam :examTime="examTime" v-if="takeExamShow" :examData="examData" @postExam="postExam"></takeExam>
     <newExamDetail @closeExamDetail="closeExamDetail" v-if="newExamDetailShow" :fatherExamData="postExamData" :examAuth="false"></newExamDetail>
 
   </div>
@@ -39,6 +42,7 @@ export default {
       examData: [], // 考试数据
       newExamDetailShow: false, // 是否显示考试详细框
       postExamData: [], // 提交考试的答案
+      examTime: '', // 考试时间
     }
   },
 
@@ -61,6 +65,7 @@ export default {
 
     // 参加培训
     takeTrain: function (data) {
+      this.examTime = data.countdown;
       this.nowTrainData = data;
       let url = this.$INTERFACE.STUDENT_TRAIN_DETAIL;
       let send = { id: data.id };

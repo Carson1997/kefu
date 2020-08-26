@@ -18,11 +18,12 @@ import examManage from '../views/examination/examManage.vue'; // 考试管理
 import trainManage from '../views/examination/trainManage.vue'; // 培训管理
 import sourceManage from '../views/examination/sourceManage.vue'; // 素材资源管理
 import examHistory from '../views/examination/examHistory.vue'; // 历史考试管理
+import importantInformation from '../views/examination/importantInformation.vue'; // 重要通知
 import myExam from '../views/train/myExam.vue'; // 我的考试
 import myTrain from '../views/train/myTrain.vue'; // 我的培训
-import dataStatisticsTable from '../views/dataStatistics/dataStatisticsTable.vue';
-import makeTable from '../views/dataStatistics/makeTable.vue';
-import uploadData from '../views/dataStatistics/uploadData.vue';
+import dataStatisticsTable from '../views/dataStatistics/dataStatisticsTable.vue'; // 数据统计表格
+import makeTable from '../views/dataStatistics/makeTable.vue'; // 制做表格
+import uploadData from '../views/dataStatistics/uploadData.vue'; // 上传数据
 
 Vue.use(VueRouter)
 
@@ -37,7 +38,7 @@ const routes = [
         name: 'dataStatistics',
         component: DataStatistics,
         meta: {
-          keepAlive: true
+          keepAlive: false
         },
         children: [
           {
@@ -45,7 +46,7 @@ const routes = [
             name: 'dataStatisticsTable',
             component: dataStatisticsTable,
             meta: {
-              keepAlive: true
+              keepAlive: false
             },
           },
           {
@@ -53,7 +54,7 @@ const routes = [
             name: 'makeTable',
             component: makeTable,
             meta: {
-              keepAlive: true
+              keepAlive: false
             },
           },
           {
@@ -61,7 +62,7 @@ const routes = [
             name: 'uploadData',
             component: uploadData,
             meta: {
-              keepAlive: true
+              keepAlive: false
             },
           },
         ]
@@ -71,7 +72,7 @@ const routes = [
         name: 'productInquiry',
         component: ProductInquiry,
         meta: {
-          keepAlive: true
+          keepAlive: false
         }
       },
       {
@@ -79,7 +80,7 @@ const routes = [
         name: 'postBar',
         component: PostBar,
         meta: {
-          keepAlive: true
+          keepAlive: false
         }
       },
       {
@@ -87,7 +88,7 @@ const routes = [
         name: 'examination',
         component: Examination,
         meta: {
-          keepAlive: true
+          keepAlive: false
         },
         children: [
           {
@@ -95,7 +96,7 @@ const routes = [
             name: 'examManage',
             component: examManage,
             meta: {
-              keepAlive: true
+              keepAlive: false
             },
           },
           {
@@ -103,7 +104,7 @@ const routes = [
             name: 'trainManage',
             component: trainManage,
             meta: {
-              keepAlive: true
+              keepAlive: false
             },
           },
           {
@@ -111,7 +112,7 @@ const routes = [
             name: 'sourceManage',
             component: sourceManage,
             meta: {
-              keepAlive: true
+              keepAlive: false
             },
           },
           {
@@ -119,9 +120,17 @@ const routes = [
             name: 'examHistory',
             component: examHistory,
             meta: {
-              keepAlive: true
+              keepAlive: false
             },
-          }
+          },
+          {
+            path: 'importantInformation',
+            name: 'importantInformation',
+            component: importantInformation,
+            meta: {
+              keepAlive: false
+            },
+          },
         ]
       },
       {
@@ -129,7 +138,7 @@ const routes = [
         name: 'train',
         component: Train,
         meta: {
-          keepAlive: true
+          keepAlive: false
         },
         children: [
           {
@@ -149,7 +158,7 @@ const routes = [
         name: 'notice',
         component: Notice,
         meta: {
-          keepAlive: true
+          keepAlive: false
         }
       },
       {
@@ -157,7 +166,7 @@ const routes = [
         component: Setting,
         name: 'setting',
         meta: {
-          keepAlive: true
+          keepAlive: false
         },
         children: [
           {
