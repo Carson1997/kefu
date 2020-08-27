@@ -2,10 +2,15 @@
   <el-dialog title="文章详情" :visible="dialogVisible" width="98%" top="3vh" :before-close="handleClose" :close-on-click-modal="false">
     <div class="detail-area" v-bind:style="{ height: detailHeight + 'px' }">
       <h2 class="detail-title">{{ noticeDataDetail.title }}</h2>
+      <div class="keyword">
+        <span>关键词: </span>
+        <span>{{ noticeDataDetail.keyword }}</span>
+      </div>
       <div class="detail-message">
         <span class="">{{ noticeDataDetail.author }}: </span>
         <span span class="detail-time">{{ noticeDataDetail.update_time }}</span>
       </div>
+      <div class="clear"></div>
       <div class="detail-content" v-html="detailContent"></div>
 
     </div>  
@@ -59,6 +64,11 @@ export default {
 .detail-title {
   text-align: center;
   color: #333333;
+}
+
+.keyword {
+  float: left;
+  margin-left: 20px;
 }
 
 .detail-message {

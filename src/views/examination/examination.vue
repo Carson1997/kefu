@@ -23,7 +23,6 @@ export default {
         { url: 'examHistory', name: '学生历史考试管理', status: 2 },
         { url: 'importantInformation', name: '系统重要信息', status: 2 },
       ],
-      nowFunction: '', // 当前的功能点
     }
   },
 
@@ -37,6 +36,15 @@ export default {
         return item.status == this.status;
       })
       return arr;
+    },
+
+    nowFunction: {
+      get: function () {
+        return this.$store.state.NOW_EXAMINATION;
+      },
+      set: function (value) {
+        this.$store.commit('changeNormalValue', { name: 'NOW_EXAMINATION', value: value });
+      }
     }
   },
 

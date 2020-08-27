@@ -149,7 +149,7 @@ export default {
         if (Array.isArray(item.path) == false) {
           item.path = item.path.split('/');
         }
-        return item.name.indexOf(value) > -1;
+        return (item.name.indexOf(value) > -1) || (item.keyword != undefined && item.keyword.indexOf(value) > -1);
       })
       return arr;
     },

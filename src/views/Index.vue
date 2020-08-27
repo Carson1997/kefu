@@ -55,7 +55,9 @@
     <!-- 修改密码 -->
     <changePass @close="closeChangePass" v-if="changePassShow" @submit="changePassHandle"></changePass>
     <!-- 查看重要通知 -->
-    <seeImformation @close="closeSeeImformation" v-if="seeImformationShow" :informationData="seeInformationData"></seeImformation>
+    <seeImformation :force="forceImformation" @confirm="confirmImformation" @close="closeSeeImformation" v-if="seeImformationShow" :informationData="seeInformationData"></seeImformation>
+    <!-- 重要法则 -->
+    <importantPrompt @confrim="getInformation" v-if="isShowPrompt" @logout="logout"></importantPrompt>
   </div>
 </template>
 
@@ -64,6 +66,7 @@ import '..//assets/css/iconfont.css';
 import uploadProgress from '../components/upload/uploadProgress'
 import changePass from '../components/fileDetail/changePass';
 import seeImformation from '../components/fileDetail/seeImformation';
+import importantPrompt from '../components/fileDetail/importantPrompt';
 export default {
   name: 'Index',
 
@@ -101,10 +104,21 @@ export default {
 
     showUploadProgress: function () { // 是否显示对话框
       return this.$store.state.SHOW_UPLOAD_PROGRESS
+    },
+
+    // 是否显示重要法则
+    isShowPrompt: function () {
+      if (this.$store.state.PROMPT == '0') {
+        this.$store.commit('changeNowDialog', 'importantPrompt');
+        return true;
+      } else {
+        this.getInformation();
+        return false;
+      }
     }
   },
 
-  components: { uploadProgress, changePass, seeImformation },
+  components: { uploadProgress, changePass, seeImformation, importantPrompt },
 
   data: function () {
     return {
@@ -114,11 +128,12 @@ export default {
       showAllImfor: false, // 是否显示所有的通知
       seeImformationShow: false, // 是否显示重要通知
       seeInformationData: [], // 查看的重要数据
+      forceImformation: false, // 是否强制显示内容
     }
   },
 
   mounted: function () {
-    this.getInformation();
+    // this.getInformation();
   },
 
   methods: {
@@ -215,13 +230,38 @@ export default {
 
     // 获取重要通知  请求后的处理函数
     getInformationPromise: function (res) {
+      let index = 0;
       for (let i in res.data) {
         res.data[i].content = this.$PUBILC.html_decode(res.data[i].content);
+        if (res.data[i].type == 0) {
+          index++;
+        }
       }
       this.information = res.data;
-      this.seeImformationShow = true;
-      this.$store.commit('changeNowDialog', 'seeImformation');
-      this.seeInformationData = res.data;
+      if (index > 0) {
+        this.seeImformationShow = true;
+        this.$store.commit('changeNowDialog', 'seeImformation');
+        this.seeInformationData = res.data;
+        this.forceImformation = false;
+      } else {
+        this.seeImformationShow = false;
+        this.$store.commit('changeNowDialog', '');
+        this.seeInformationData = [];
+        this.forceImformation = false;
+      }
+    },
+
+    // 确认信息
+    confirmImformation: function (id) {
+      let url = this.$INTERFACE.CONFIRM_IMPORTANT_NEWS;
+      let send = { id: id };
+      this.$NORMAL_POST(url, send).then(this.confirmImformationPromise);
+    },
+
+    // 确认信息  请求后的处理函数
+    confirmImformationPromise: function (res) {
+      this.$message({ type: 'success', message: res.info });
+      this.getInformation();
     },
 
     // 查看重要通知
@@ -229,6 +269,7 @@ export default {
       this.seeImformationShow = true;
       this.$store.commit('changeNowDialog', 'seeImformation');
       this.seeInformationData = [data];
+      this.forceImformation = true;
     },
 
     // 关闭查看重要通知
@@ -241,7 +282,7 @@ export default {
     // 更改显示全部重要通知
     changeInforShow: function () {
       this.showAllImfor = !this.showAllImfor;
-    }
+    },
   }
 }
 </script>
@@ -336,7 +377,7 @@ export default {
   font-size: 14px;
   display: none;
   background: white;
-  z-index: 100;
+  z-index: 10000;
 }
 
 .page-head-user-info-top {

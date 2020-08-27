@@ -20,7 +20,6 @@ export default {
         { url: 'makeTable', name: '创建表格', status: 2 },
         { url: 'uploadData', name: '上传数据', status: 2 }
       ],
-      nowFunction: '', // 当前的功能点
     }
   },
 
@@ -35,6 +34,15 @@ export default {
       })
       arr.unshift({ url: 'dataStatisticsTable', name: '客服数据汇总统计', status: 2 });
       return arr;
+    },
+
+    nowFunction: {
+      get: function () {
+        return this.$store.state.NOW_DATASTATISTICS_ROUTE;
+      },
+      set: function (value) {
+        this.$store.commit('changeNormalValue', { name: 'NOW_DATASTATISTICS_ROUTE', value: value });
+      }
     }
   },
 

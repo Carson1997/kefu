@@ -89,7 +89,7 @@ export default {
     
     // 编辑后的处理函数
     newNoticeHandle: function (res) {
-      let obj = { fid: res.data.id, title: '', keyword: '', file_url: '', file_type: 0, top: 0 };
+      let obj = { fid: res.data.id, title: '', keyword: '', file_url: '', file_type: 0, top: '0' };
       this.noticeContent = obj;
       this.$message({ type: 'success', message: res.info });
       this.getNoticeDetailData();

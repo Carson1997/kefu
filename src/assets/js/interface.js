@@ -14,6 +14,7 @@ var Interface = {
   LOIGIN: REQUEST_URL + '/user/login', // 登录获取TOKEN
   RELOGIN: REQUEST_URL + '/user/login_detection', // 重登录获取TOKEN
   CHANGE_PASS: REQUEST_URL + '/user/password', // 修改密码
+  IMPORTANT_RULES: REQUEST_URL + '/user/prompt', // 重要法则
   // ******************* 登录网站的接口 *****************************************
 
   // =================== 设置模块的接口 =========================================
@@ -78,6 +79,7 @@ var Interface = {
   ADD_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_add_update', // 发布重要通知
   ALL_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_list', // 所有的重要通知
   DEL_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_del', // 删除重要通知
+  CONFIRM_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_confirm', // 确定查看重要信息
   // ****************** 教学模块 *****************************************
 
   // ****************** bbs *****************************************

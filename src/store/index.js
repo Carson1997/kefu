@@ -12,6 +12,7 @@ export default new Vuex.Store({
     USER_GROUPING: '', // 用户群组
     USER_AUTHORITY: '', // 用户权限
     USER_SHOP_ID: '', // 用户的店铺
+    PROMPT: '', // 用户是否已经查看过重要通知
     PAGE_LEFT_NAV: { // 页面左侧导航
       '/dataStatistics': { index: '1', name: '数据统计', icon: 'icon-icon-test', url: '/dataStatistics' },
       '/productInquiry': { index: '2', name: '产品查询', icon: 'icon-chanpin', url: '/productInquiry' },
