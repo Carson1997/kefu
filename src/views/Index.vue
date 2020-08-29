@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div class="information" v-bind:class="{ showImfor: showAllImfor }"> <!-- 重要通知 -->
+    <div class="information" v-if="isNormalUser" v-bind:class="{ showImfor: showAllImfor }"> <!-- 重要通知 -->
     <div class="information-controller" @click="changeInforShow">
       <span class="iconfont icon-information"></span>
     </div>
@@ -113,6 +113,15 @@ export default {
         return true;
       } else {
         this.getInformation();
+        return false;
+      }
+    },
+
+    // 是否为客服角色
+    isNormalUser: function () {
+      if (this.$store.state.USER_STATUS == '0' || this.$store.state.USER_STATUS == '1') {
+        return true;
+      } else {
         return false;
       }
     }
@@ -224,8 +233,10 @@ export default {
 
     // 获取重要通知
     getInformation: function () {
-      let url = this.$INTERFACE.ALL_IMPORTANT_NEWS;
-      this.$NORMAL_POST(url).then(this.getInformationPromise);
+      if (this.$store.state.USER_STATUS == '0' || this.$store.state.USER_STATUS == '1') {
+        let url = this.$INTERFACE.ALL_IMPORTANT_NEWS;
+        this.$NORMAL_POST(url).then(this.getInformationPromise);
+      }
     },
 
     // 获取重要通知  请求后的处理函数
