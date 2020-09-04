@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="创建用户" :visible="dialogVisible" width="30%" append-to-body :before-close="handleClose" :close-on-press-escape="false" :close-on-click-modal="false">
+  <el-dialog title="创建用户" :visible="dialogVisible" width="30%" append-to-body :before-close="handleClose" :close-on-click-modal="false">
     <div class="content">
       <el-input v-if="isBatch != true" class="each-input" placeholder="请输入账号" v-model="username">
         <template slot="prepend">账号: </template>
@@ -172,7 +172,7 @@ export default {
           send['username'] = this.username;
           send['password'] = sha.update(password).digest("hex");;
           send['name'] = this.name;
-          send['phone'] = this.phone;
+          // send['phone'] = this.phone;
         }
         if (this.projectId == undefined) {
           send['grouping'] = this.groupValue.join(',');
@@ -209,10 +209,10 @@ export default {
           this.alert('请输入姓名!');
           return false;
         }
-        if (this.phone == '' || this.phone.length != 11) {
-          this.alert('请输入正确的手机!');
-          return false;
-        }
+        // if (this.phone == '' || this.phone.length != 11) {
+        //   this.alert('请输入正确的手机!');
+        //   return false;
+        // }
       }
       if (this.projectId == undefined) {
         if (this.groupValue.length == 0) {

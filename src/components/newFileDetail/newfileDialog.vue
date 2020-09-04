@@ -1,11 +1,11 @@
 <template>
-  <el-dialog :title="dialogTitle" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog :title="dialogTitle" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <el-input class="each-input" placeholder="请输入内容" v-model="editFileData.name">
         <template slot="prepend">名称: </template>
       </el-input>
       <div class="each-input">
-        <span class="name">分组:</span>
+        <span class="name">权限:</span>
         <el-select class="value" v-model="editFileData.authority" placeholder="权限">
           <el-option v-for="item in isGroupingOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
@@ -72,8 +72,12 @@ export default {
     },
 
     // 获取所有群组  请求后的处理函数
-    getGroupPromise: function (res) {
-      this.groupOptions = res.data;
+    getGroupPromise: function (res) {  // 群组限制
+      let authGroup = this.$store.state.USER_GROUPING;
+      let arr = res.data.filter(item => {
+        return authGroup.indexOf(item.id) > -1;
+      })
+      this.groupOptions = arr;
     },
 
     // 提交

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="创建群组" :visible="dialogVisible" width="30%" :before-close="handleClose"  :close-on-press-escape="false" :close-on-click-modal="false">
+  <el-dialog title="创建群组" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <el-input class="each-input" placeholder="请输入群组名" v-model="groupName">
         <template slot="prepend">群组名: </template>

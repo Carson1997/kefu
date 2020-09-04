@@ -1,6 +1,6 @@
 <!-- 创建试题 -->
 <template>
-  <el-dialog title="编辑试题" append-to-body top="5vh" :visible="dialogVisible" width="40%" :before-close="handleClose" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog title="编辑试题" append-to-body top="5vh" :visible="dialogVisible" width="40%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <div class="each-input">
         <span class="name">题目名称:</span>

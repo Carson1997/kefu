@@ -1,7 +1,7 @@
 <template>
   <div id="trainManage" class="train-manage">
     <fileFolderComponent :customButton="customButton" :fileIsCanEdit="false" @exposeToBusiness="exposeToBusiness" class="train-file" :fileData="fileData" :fileAuth="fileAuth"></fileFolderComponent>
-    <newTrainSourceDialog @next="newExam" :trainData="trainData" v-if="newTrainSourceDialogShow"></newTrainSourceDialog>
+    <newTrainSourceDialog @close="closeNewTrainSourceDialog" @next="newExam" :trainData="trainData" v-if="newTrainSourceDialogShow"></newTrainSourceDialog>
     <newExamDialog @close="closeNewExamDialog" v-if="newExamDialogShow" @newFileHandle="newExamHandle" :examFileData="trainData"></newExamDialog>
     <newExamDetail :fatherExamData="newExamDetailData" @closeExamDetail="closeExamDetail" v-if="newExamDetailShow" :examId="trainExamId" :examAuth="examAuth"></newExamDetail>
     <seeScoreDialog @reExam="reExam" @close="closeSeeScoreDialog" @seeExamDetail="seeExamDetail" :v-if="seeScoreDialogShow" :tableData="scoreData"></seeScoreDialog>
@@ -64,6 +64,12 @@ export default {
     // 获取培训数据  请求后的处理函数
     getTrainDataPromise: function (res) {
       this.fileData = res.data
+    },
+
+    // 关闭新建培训的对话框
+    closeNewTrainSourceDialog: function () {
+      this.seeScoreDialogShow = false;
+      this.$store.commit('changeNowDialog', '');
     },
 
     // 组件暴露给业务的接口

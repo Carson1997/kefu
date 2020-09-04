@@ -1,6 +1,6 @@
 <!-- 新建考试对话框 -->
 <template>
-  <el-dialog title="编辑考试的基础信息" :visible="dialogVisible" width="45%" :before-close="handleClose" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog title="编辑考试的基础信息" :visible="dialogVisible" width="45%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <div class="each-input">
         <span class="name">试卷文件名: </span>

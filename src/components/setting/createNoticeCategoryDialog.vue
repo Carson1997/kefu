@@ -1,6 +1,6 @@
 <!-- 创建知识库分类对话框 -->
 <template>
-  <el-dialog title="创建知识库分类" :visible="dialogVisible" width="30%" :before-close="handleClose"  :close-on-press-escape="false" :close-on-click-modal="false">
+  <el-dialog title="创建知识库分类" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <el-input class="each-input" placeholder="请输入知识库分类" v-model="categoryName">
         <template slot="prepend">知识库分类名称: </template>

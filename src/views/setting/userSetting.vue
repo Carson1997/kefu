@@ -57,15 +57,13 @@ export default {
   },
 
   computed: {
-    tableDataShow: function () {
+    tableDataShow: function () { // 表格显示的内容
       let searchInput = this.searchInput;
       if (this.searchInput == '') {
         return this.tableData;
       } else {
         let arr = this.tableData.filter(item => {
-          return (item.name.indexOf(searchInput) > -1 ||
-          item.username.indexOf(searchInput) > -1 || 
-          item.phone.indexOf(searchInput) > -1);
+          return ( (item.name.indexOf(searchInput) > - 1) || (item.username.indexOf(searchInput) > - 1) );
         })
         return arr;
       }

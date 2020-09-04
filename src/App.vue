@@ -81,4 +81,8 @@ export default {
 .el-tabs__header {
   margin: 0 !important;
 }
+
+.el-dialog {
+  margin-bottom: 10px !important;
+}
 </style>

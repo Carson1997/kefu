@@ -7,6 +7,10 @@ const BASE_IP = process.env.NODE_ENV === "development" ? "/TEST_API_SERVER" : ip
 const BASE_PROJECT = '/binghuo_information'; // 项目位置
 const API_ADDRESS = '/Backstage'; // api地址
 const REQUEST_URL = BASE_IP + BASE_PROJECT + API_ADDRESS;
+let OUT_SERVER = 'http://192.168.1.23';
+if (window.location.host == '219.128.102.76:808') {
+  OUT_SERVER = 'http://219.128.102.76:809';
+}
 
 var Interface = {
   // =================== 登录网站的接口 =========================================
@@ -15,6 +19,7 @@ var Interface = {
   RELOGIN: REQUEST_URL + '/user/login_detection', // 重登录获取TOKEN
   CHANGE_PASS: REQUEST_URL + '/user/password', // 修改密码
   IMPORTANT_RULES: REQUEST_URL + '/user/prompt', // 重要法则
+  NEW_MESSAGE_PROMPT: REQUEST_URL + '/Content/prompt_list', // 新消息提示
   // ******************* 登录网站的接口 *****************************************
 
   // =================== 设置模块的接口 =========================================
@@ -37,9 +42,9 @@ var Interface = {
   // ******************* 设置模块的接口 *****************************************
 
   // ******************  上传文件的接口 *****************************************
-  FILE_TEST: 'http://service.miniice.cn/binghuo_information/index.php/Api/Training/Testing/', // 上传文件前的检测
-  FILE_UPLOAD: 'http://service.miniice.cn/binghuo_information/index.php/Api/Training/upload_order_mp4/', // 上传文件接口
-  FILE_MERGE: 'http://service.miniice.cn/binghuo_information/index.php/Api/Training/merge/', // 上传文件合并
+  FILE_TEST: OUT_SERVER + '/binghuo_information/index.php/Api/Training/Testing/', // 上传文件前的检测
+  FILE_UPLOAD: OUT_SERVER + '/binghuo_information/index.php/Api/Training/upload_order_mp4/', // 上传文件接口
+  FILE_MERGE: OUT_SERVER + '/binghuo_information/index.php/Api/Training/merge/', // 上传文件合并
   // ******************  上传文件的接口 *****************************************
 
   // ******************  产品查询 *****************************************

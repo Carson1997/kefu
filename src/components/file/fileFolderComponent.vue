@@ -1,8 +1,9 @@
+<!-- 文件夹组件 -->
 <template>
   <div class="file-folder-component">
-    <filePathComponent @fileArrange="fileArrange" :fileAuth="fileAuth" @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
+    <filePathComponent :fatherNowFileArrange="fatherNowFileArrange" :isFileArrange="isFileArrange" @fileArrange="fileArrange" :fileAuth="fileAuth" @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
     <fileShowComponent :rankingType="rankingType" @customClick="customClick" :customButton="customButton" @dragend="dragend" @dragstart="dragstart" :isCanDrag="isCanDrag" :isCanEdit="fileIsCanEdit" @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
-    <newfileDialog @closeHandle="closeHandle" @newFolderApply="newFolderApply" v-if="newfileDialog" :nowFile="fileShowData" :editFileData="editFileData"></newfileDialog>
+    <newfileDialog :fileAuth="newFileAuth" :fileGrouping="newFileGroup" @closeHandle="closeHandle" @newFolderApply="newFolderApply" v-if="newfileDialog" :nowFile="fileShowData" :editFileData="editFileData"></newfileDialog>
   </div>
 </template>
 
@@ -35,16 +36,15 @@ export default {
     customButton: { // 自定义按钮
       type: Object,
       required: false,
+    },
+    isFileArrange: { // 是否显示文件排行选项
+      type: Boolean,
+      required: false,
+      default: false,
     }
   },
 
   components: { filePathComponent, fileShowComponent, newfileDialog },
-
-  watch: {
-    fileData: function () {
-      this.initFileData();
-    }
-  },
 
   data: function () {
     return {
@@ -56,6 +56,27 @@ export default {
       newfileDialog: false, // 新建文件框是否显示
       editFileData: '', // 目前修改的数据
       rankingType: '', // 文件排行的根据
+      fatherNowFileArrange: '', // 当前文件排行方式
+      nowLevelData: [], // 现在的数据
+      newFileAuth: '', // 新建文件时父文件夹的权限
+      newFileGroup: '' // 新建文件时父文件夹的群组
+    }
+  },
+
+  watch: {
+    fileData: function () {
+      if (this.fatherNowFileArrange == '') {
+        this.initFileData();
+      } else {
+        this.fileArrange(this.fatherNowFileArrange);
+      }
+    }
+  },
+
+  mounted: function () {
+    if (this.isFileArrange == true) { // 选择显示文件排行方式
+      this.fatherNowFileArrange = 'month_click';
+      this.fileArrange('month_click');
     }
   },
 
@@ -85,6 +106,7 @@ export default {
         data = this.findFile(this.filePath).obj;
       }
       this.fileShowData = this.changeToArr(data);
+      this.nowLevelData = this.fileShowData;
     },
 
     // 通过层级关系寻找文件夹
@@ -135,30 +157,66 @@ export default {
       this.fatherSearchInput = value;
       this.filePath = this.allName;
       let arr
-      if (value != '') {
-        arr = this.searchFile(value);
+      if (value == '') { // 无搜索内容
+        if (this.fatherNowFileArrange == '' || this.fatherNowFileArrange == 'all') { // 显示全部
+          this.arrangeFileData();
+        } else { // 显示当前的部分
+          this.fileArrange(this.fatherNowFileArrange);
+        }
+      } else { // 有搜索内容
+        if (this.fatherNowFileArrange == '' || this.fatherNowFileArrange == 'all') { // 在全部中搜索
+          arr = this.searchFile(value);
+        } else { // 在当前部分搜索
+          arr = this.searchFileCurrent(value);
+        }
         this.fileShowData = arr;
-      } else {
-        this.arrangeFileData();
       }
     },
 
-    // 搜索文件
+    // 在全部文件中搜索文件
     searchFile: function (value) {
       let arr = this.fileData.filter(item => {
         if (Array.isArray(item.path) == false) {
           item.path = item.path.split('/');
         }
-        return (item.name.indexOf(value) > -1) || (item.keyword != undefined && item.keyword.indexOf(value) > -1);
+        return (item.name.indexOf(value) > -1) || (item.keyword != undefined && item.keyword.indexOf(value) > -1) || (item.showId != undefined && item.showId.indexOf(value) > -1);
+      })
+      return arr;
+    },
+
+    // 在当前文件中搜索文件
+    searchFileCurrent: function (value) {
+      let arr = this.nowLevelData.filter(item => {
+        if (Array.isArray(item.path) == false) {
+          item.path = item.path.split('/');
+        }
+        return (item.name.indexOf(value) > -1) || (item.keyword != undefined && item.keyword.indexOf(value) > -1) || (item.showId != undefined && item.showId.indexOf(value) > -1);
       })
       return arr;
     },
 
     // 编辑或者新建文件夹
     newFolder: function (data) {
+      let obj = this.findFatherAuth();
+      data.authority = obj.authority;
+      data.grouping = obj.grouping;
       this.newfileDialog = true;
       this.$store.commit('changeNowDialog', 'newfileDialog');
       this.editFileData = data;
+    },
+
+    // 寻找当前文件夹的权限
+    findFatherAuth: function () {
+      let obj = JSON.parse(JSON.stringify(this.fileDataObj));
+      let path = this.filePath.split('/');
+      for (let i = 0; i < path.length - 1; i++) {
+        obj = obj[path[i]]['children'];
+      }
+      obj = obj[path[path.length - 1]];
+      return {
+        authority: obj.authority == undefined ? '' : obj.authority,
+        grouping: obj.grouping == undefined ? [] : obj.grouping.split(',')
+      }
     },
 
     // 关闭新建对话框
@@ -224,6 +282,8 @@ export default {
 
     // 改变文件排序
     fileArrange: function (order) {
+      this.fatherSearchInput = '';
+      this.fatherNowFileArrange = order;
       this.rankingType = order;
       let arr = this.filterFile();
       let data;
@@ -233,9 +293,15 @@ export default {
       }else if (order == 'topping') {
         data = this.filterTopFile(arr);
         this.fileShowData = data;
+        this.nowLevelData = this.fileShowData;
       } else if (order == 'week_click' || order == 'month_click' || order == 'total_click') {
         data = this.fileRanking(arr, order);
         this.fileShowData = data;
+        this.nowLevelData = this.fileShowData;
+      } else if (order == 'date') {
+        data = this.fileTimeRanking(arr, order);
+        this.fileShowData = data;
+        this.nowLevelData = this.fileShowData;
       }
     },
 
@@ -259,6 +325,14 @@ export default {
     fileRanking: function (data, attr) {
       data.sort(function (a, b) {
         return b[attr] - a[attr];
+      })
+      return data;
+    },
+
+    // 文件时间排序
+    fileTimeRanking: function (data, attr) {
+      data.sort(function (a, b) {
+        return new Date(b[attr]).getTime() - new Date(a[attr]).getTime();
       })
       return data;
     },

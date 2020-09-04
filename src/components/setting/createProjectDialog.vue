@@ -1,6 +1,6 @@
 <!-- 创建项目对话框 -->
 <template>
-  <el-dialog title="创建新项目" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-press-escape="false" :close-on-click-modal="false">
+  <el-dialog title="创建新项目" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <div class="each-input-area">
         <span class="name">项目名:</span>

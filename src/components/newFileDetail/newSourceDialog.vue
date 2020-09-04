@@ -1,6 +1,6 @@
 <!-- 新建素材文件  上传文件 -->
 <template>
-  <el-dialog title="上传素材文件" :visible="dialogVisible" :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false" width="30%" :before-close="handleClose">
+  <el-dialog title="上传素材文件" :visible="dialogVisible" :show-close="false" :close-on-click-modal="false" width="30%" :before-close="handleClose">
     <div class="upload-area">
       <div class="each-message">
         <span class="name">文件名: </span>

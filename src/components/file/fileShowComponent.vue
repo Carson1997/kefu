@@ -16,7 +16,7 @@
             </div>
             <span class="file-cursor" @click="switchFile('next', item)">{{ item.name }}</span>
             <div class="img-sign hot-area" v-if="rankingType != '' && rankingType != 'topping'">
-              <img class="hot-img" src="../../../public/img/hot.png" alt="">
+              <img class="hot-img" src="../../../public/img/hot.png" alt="" v-if="rankingType != 'date'">
               {{ item[rankingType] }}
             </div>
           </div>
@@ -24,8 +24,8 @@
           <div class="each-file-part operation" v-if="fileAuth == true">
             <!-- <el-button type="primary" size="mini" plain @click="editFileName(item)">重命名</el-button> -->
             <el-button v-if="customButton && item.file_type == 1" type="primary" size="mini" plain @click="customClick(item, customButton.order)">{{ customButton.name }}</el-button>
-            <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1 && isCanEdit == true && item.isCanEdit != false" :disabled="rankingType != ''">编辑文件</el-button>
-            <el-button class="red" type="danger" plain size="mini" @click="deleteFile(item.id)" :disabled="rankingType != ''">删除</el-button>
+            <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1 && isCanEdit == true && item.isCanEdit != false">编辑文件</el-button>
+            <el-button class="red" type="danger" plain size="mini" @click="deleteFile(item.id)">删除</el-button>
           </div>
           <div class="clear"></div>
         </div>
@@ -132,6 +132,12 @@ export default {
   box-shadow: 0 0 1px #b1b1b1;
 }
 
+@media screen and (max-device-width: 1366px) {
+  .file-show-component {
+    height: calc(100% - 120px);
+  }
+}
+
 .file-area {
   width: 100%;
   height: 100%;
@@ -177,6 +183,10 @@ export default {
 }
 
 .file-cursor {
+  max-width: calc(100% - 100px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   cursor: pointer;
   float: left;
 }
@@ -186,7 +196,7 @@ export default {
 }
 
 .file-area .each-file .each-file-part {
-  width: 33%;
+  width: 40%;
   float: left;
 }
 
@@ -227,7 +237,7 @@ export default {
 }
 
 .hot-area {
- margin-left: 30px;
+ margin-left: 15px;
  color: indianred;
  font-weight: 500;
 }

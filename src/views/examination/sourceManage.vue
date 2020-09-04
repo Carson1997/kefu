@@ -83,6 +83,7 @@ export default {
     // 新建文件  请求后的处理函数
     newFileHandlePromise: function (res) {
       this.$message({ type: 'success', message: res.info });
+      this.newSourceDialogShow = false;
       this.getData();
     },
 

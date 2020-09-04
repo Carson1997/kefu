@@ -1,7 +1,7 @@
 <template>
   <div id="notice">
     <div class="notice-detail">
-      <fileFolderComponent @seeFile="seeNotice" :fileAuth="fileAuth" class="notice-folder" @exposeToBusiness="exposeToBusiness" :fileData="fileData"></fileFolderComponent>
+      <fileFolderComponent :isFileArrange="true" @seeFile="seeNotice" :fileAuth="fileAuth" class="notice-folder" @exposeToBusiness="exposeToBusiness" :fileData="fileData"></fileFolderComponent>
     </div>
     <newNoticeDetail @editContent="editContent" :noticeContent="noticeContent"></newNoticeDetail>
     <noticeDetail @close="closeDetail" v-if="noticeDataShow" :noticeDataDetail="noticeDataDetail"></noticeDetail>
@@ -50,8 +50,23 @@ export default {
 
     // 获取知识库数据  请求后的处理函数
     getNoticeDetailDataPromise: function (res) {
+      for (let i in res.data) {
+        res.data[i].showId = this.completeId(res.data[i].id);
+      }
       this.fileData = res.data;
       this.fileAllData = res.data;
+    },
+
+    // 补全id
+    completeId: function (id) {
+      let showId = '';
+      if (id.length < 5) {
+        for (let i = 0; i < 5 - id.length; i++) {
+          showId = showId + '0';
+        }
+        showId = showId + id;
+      }
+      return showId;
     },
 
     // 组件暴露到业务层的方法
@@ -89,7 +104,7 @@ export default {
     
     // 编辑后的处理函数
     newNoticeHandle: function (res) {
-      let obj = { fid: res.data.id, title: '', keyword: '', file_url: '', file_type: 0, top: '0' };
+      let obj = { fid: res.data.id, title: res.data.name, keyword: '', file_url: '', file_type: 0, top: '0' };
       this.noticeContent = obj;
       this.$message({ type: 'success', message: res.info });
       this.getNoticeDetailData();
@@ -130,6 +145,7 @@ export default {
       if (res.data.content != '') {
         this.noticeDataShow = true;
         this.$store.commit('changeNowDialog', 'noticeDetail');
+        res.data.showId = this.completeId(res.data.id);
         this.noticeDataDetail = res.data;
       } else if (res.data.file_url != '') {
         this.$store.commit('changeNowDialog', 'sourceDetail');
@@ -149,25 +165,39 @@ export default {
 
     // 编辑文件
     editFile: function (data) {
-      this.$NORMAL_POST(this.$INTERFACE.CATEGORY_DETAIL, { fid: data.id }, 0, [ 'fid' ]).then(this.editFilePromise);
+      this.$NORMAL_POST(this.$INTERFACE.CATEGORY_DETAIL, { fid: data.id, name: data.name }, 0, [ 'fid', 'name' ]).then(this.editFilePromise);
     },
 
     // 编辑文件  请求后的处理函数
     editFilePromise: function (res) {
-      let obj = { fid: res.needToRes.fid, id: res.data.id, title: res.data.title, keyword: res.data.keyword, file_url: res.data.file_url, file_type: 1, top: res.data.top };
+      let obj = { 
+        fid: res.needToRes.fid, 
+        id: res.data.id, 
+        title: res.data.title == undefined ? '' : res.data.title, 
+        keyword: res.data.keyword == undefined ? '' : res.data.keyword, 
+        file_url: res.data.file_url == undefined ? '' : res.data.file_url, 
+        file_type: 1, 
+        top: res.data.top == undefined ? '0' : res.data.top 
+      };
+      res.data.content = res.data.content == undefined ? '' : res.data.content; 
       this.$store.commit('changeNormalValue', { name: 'EDIT_CONTENT', value: this.$PUBILC.html_decode(res.data.content) });
-      if (res.data.file_url == '' ) {
+      if (res.data.file_url == '' || res.data.file_url == undefined) {
         obj.file_type = 0;
       }
       this.noticeContent = obj;
       this.$store.commit('changeNowDialog', 'newNoticeDetail');
-    }
+    },
   }
 }
 
 </script>
 
 <style lang="scss" scoped>
+.new-message {
+  padding-top: 20px;
+  padding-left: 40px;
+}
+
 .notice-detail {
   width: 100%;
   height: 100%;

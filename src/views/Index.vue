@@ -9,6 +9,10 @@
           <span class="iconfont icon-close" @click="closePage($event, index)"></span>
         </div>
       </div>
+      <!-- 新的消息提示 -->
+      <div class="new-messages" v-if="allNewMessage != 0" @click="showNewMessage">
+        你有{{ allNewMessage }}条新的消息!
+      </div>
       <div class="page-head-user-name">
         {{ username }}
         <div class="page-head-user-info">
@@ -16,13 +20,14 @@
           <div class="each-page-head-function" @click="changepass">修改用户信息</div>
           <div class="each-page-head-function" @click="logout">退出</div>
         </div>
-        </div>
+      </div>
     </div>
 
     <div class="page-left-nav" v-bind:class="{ noShowNav: isShowNav }">
       <div class="each-page-left-nav" v-for="item in leftNav" :key="item.index" @click="switchPage(item.url, item.name)">
-        <span class="iconfont" :class="item.icon"></span>
+        <span class="iconfont each-page-left-nav-iconfont" :class="item.icon"></span>
         <span class="each-page-left-nav-name">{{ item.name }}</span>
+        <div class="clear"></div>
       </div>
       <div class="page-left-nav-controller" @click="switchNav">
         <span class="iconfont icon-zuo yincang" v-bind:class="{ noShowNavYincang: isShowNav }"></span>
@@ -58,6 +63,8 @@
     <seeImformation :force="forceImformation" @confirm="confirmImformation" @close="closeSeeImformation" v-if="seeImformationShow" :informationData="seeInformationData"></seeImformation>
     <!-- 重要法则 -->
     <importantPrompt @confrim="getInformation" v-if="isShowPrompt" @logout="logout"></importantPrompt>
+    <!-- 新消息通知对话框 -->
+    <newMessageDetails @close="closeNewMessageDetails" v-if="newMessageDetailsShow"></newMessageDetails>
   </div>
 </template>
 
@@ -67,6 +74,7 @@ import uploadProgress from '../components/upload/uploadProgress'
 import changePass from '../components/fileDetail/changePass';
 import seeImformation from '../components/fileDetail/seeImformation';
 import importantPrompt from '../components/fileDetail/importantPrompt';
+import newMessageDetails from '../components/fileDetail/newMessageDetails';
 export default {
   name: 'Index',
 
@@ -113,6 +121,7 @@ export default {
         return true;
       } else {
         this.getInformation();
+        this.getNewMessage();
         return false;
       }
     },
@@ -124,10 +133,19 @@ export default {
       } else {
         return false;
       }
+    },
+
+    // 新消息的总数
+    allNewMessage: function () {
+      let num = 0;
+      for (let i in this.$store.state.NEW_MESSAGE) {
+        num += this.$store.state.NEW_MESSAGE[i].length;
+      }
+      return num;
     }
   },
 
-  components: { uploadProgress, changePass, seeImformation, importantPrompt },
+  components: { uploadProgress, changePass, seeImformation, importantPrompt, newMessageDetails },
 
   data: function () {
     return {
@@ -138,14 +156,41 @@ export default {
       seeImformationShow: false, // 是否显示重要通知
       seeInformationData: [], // 查看的重要数据
       forceImformation: false, // 是否强制显示内容
+      newMessageDetailsShow: false, // 是否显示新消息对话框
     }
   },
 
-  mounted: function () {
-    // this.getInformation();
-  },
-
   methods: {
+
+    // 获取新消息通知
+    getNewMessage: function () {
+      let url = this.$INTERFACE.NEW_MESSAGE_PROMPT;
+      this.$NORMAL_POST(url).then(this.getNewMessagePromise);
+    },
+
+    // 获取新消息通知  请求后的处理函数
+    getNewMessagePromise: function (res) {
+      let obj = {};
+      for (let i in res.data) {
+        if (obj[res.data[i].id] == undefined) {
+          obj[res.data[i].type] = [];
+        }
+        obj[res.data[i].type].push(res.data[i]);
+      }
+      this.$store.commit('changeNormalValue', { name: 'NEW_MESSAGE', value: obj });
+    },
+
+    // 显示新的消息
+    showNewMessage: function () {
+      this.newMessageDetailsShow = true;
+      this.$store.commit('changeNowDialog', 'newMessageDetails');
+    },
+
+    // 关闭显示新的消息对话框
+    closeNewMessageDetails: function () {
+      this.newMessageDetailsShow = false;
+      this.$store.commit('changeNowDialog', '');
+    },
 
     // 关闭修改密码对话框
     closeChangePass: function () {
@@ -361,6 +406,41 @@ export default {
   cursor: pointer;
 }
 
+.new-messages {
+  position: absolute;
+  color: white;
+  right: 130px;
+  letter-spacing: .5px;
+  font-size: 13px;
+  color: #d83a3a;
+  background: #f8f8f8;
+  box-shadow: 0 0 1px lightgray;
+  top: 0;
+  line-height: 30px;
+  margin-top: 7.5px;
+  padding: 0 20px;
+  cursor: pointer;
+}
+
+.new-messages:hover {
+  box-shadow: 0 0 3px white;
+}
+
+.message-area {
+  width: 130px;
+  position: absolute;
+  top: 0;
+  line-height: 45px;
+  letter-spacing: .3px;
+  font-size: 16px;
+  cursor: pointer;
+  right: 100px;
+}
+
+.new-message-name {
+  color: #ebebeb;
+}
+
 .page-head-user-name:hover {
   box-shadow: 0 0 1px lightgrey;
 }
@@ -447,8 +527,14 @@ export default {
   border-bottom: solid 1px #dddddd;
 }
 
+.each-page-left-nav-iconfont {
+  float: left;
+}
+
 .page-left-nav .each-page-left-nav .each-page-left-nav-name {
   letter-spacing: .5px;
+  float: left;
+  line-height: 27px;
 }
 
 .page-left-nav .page-left-nav-controller {
@@ -600,5 +686,10 @@ export default {
   margin-right: 30px;
   padding-top: 5px !important;
   padding-bottom: 0 !important;
+}
+
+.red {
+  color: indianred;
+  font-weight: 500;
 }
 </style>

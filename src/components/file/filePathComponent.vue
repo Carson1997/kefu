@@ -3,17 +3,17 @@
     <div class="file-controller">
       <el-button class="control-button" v-if="fileAuth" type="primary" size="small" plain @click="newFolder(0)" :disabled="searchInput != '' || nowFunc != 'all'">新建文件夹</el-button>
       <el-button class="control-button" v-if="fileAuth" type="success" size="small" plain :disabled="searchInput != '' || nowFunc != 'all'" @click="newFolder(1)">新建文件</el-button>
-      <el-input class="control-input" placeholder="请输入内容" v-model="searchInput" @input="searchHandle" :disabled="nowFunc != 'all'">
+      <el-input class="control-input" placeholder="请输入文件名, 关键字，或文章编码搜索" v-model="searchInput" @input="searchHandle">
         <template slot="append">
           <span class="el-icon-search"></span>
         </template>
       </el-input>
-      <div class="file-arrange" id="fileArrange">
-        <div class="file-arrange-name">文件排行</div>
+      <div class="file-arrange" id="fileArrange" v-if="isFileArrange">
+        <div class="file-arrange-name">文件排行: </div>
         <div class="file-arrange-body">
           <div class="each-arrange" v-for="(item, index) in functionData" :key="index" @click="changeFunc(item.order)">
             {{ item.name }}
-            <span v-if="nowFunc == item.order" class="el-icon-back"></span>
+            <span v-if="nowFunc == item.order" class="el-icon-check"></span>
           </div>
         </div>
       </div>
@@ -44,6 +44,15 @@ export default {
     fileAuth: { // 文件夹操作权限
       type: Boolean,
       required: true
+    },
+    isFileArrange: { // 是否显示文件排行选项
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    fatherNowFileArrange: { // 文件排行方式
+      type: String,
+      required: true
     }
   },
 
@@ -57,6 +66,7 @@ export default {
         { order: 'week_click', name: '周热点文件' },
         { order: 'month_click', name: '月热点文件' },
         { order: 'total_click', name: '总共点击数' },
+        { order: 'date', name: '时间' },
       ],
       nowFunc: 'all', // 当前的排行
     }
@@ -67,11 +77,17 @@ export default {
       this.arrangeFilePath();
     },
 
-      fatherSearchInput: function () {
-        if (this.searchInput != this.fatherSearchInput) {
-          this.searchInput = this.fatherSearchInput;
-        }
+    fatherSearchInput: function () {
+      if (this.searchInput != this.fatherSearchInput) {
+        this.searchInput = this.fatherSearchInput;
       }
+    },
+
+    fatherNowFileArrange: function () {
+      if (this.nowFunc != this.fatherNowFileArrange) {
+        this.nowFunc = this.fatherNowFileArrange;
+      }
+    }
   },
 
   methods: {
@@ -130,7 +146,6 @@ export default {
 .file-path-component .file-controller .control-input {
   width: 350px;
   margin-left: 20px;
-  float: left;
 }
 
 .file-path-component .file-path {
@@ -149,55 +164,58 @@ export default {
 }
 
 .file-arrange {
-  position: relative;
-  width: 100px;
-  float: left;
-  background: white;
   margin-left: 20px;
-  margin-top: 5px;
+  width: calc(100% - 600px);
+  line-height: 40px;
+}
+
+@media screen and (min-device-width: 1366px) {
+  .file-arrange {
+    float: left;
+  }
+
+  .file-path-component .file-controller .control-input {
+    width: 350px;
+    margin-left: 20px;
+    float: left;
+  }
+}
+
+@media screen and (max-device-width: 1366px) {
+  .file-arrange {
+    width: 100%;
+    margin-top: 10px;
+  }
 }
 
 .file-arrange-name {
-  width: 100%;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 30px;
-  color: #409EFF;
-  background: #ecf5ff;
-  border: solid 1px #b3d8ff;
-  cursor: pointer;
-  box-shadow: 0 0 1px #808080;
-  border-radius: 5px;
-}
-
-.file-arrange:hover .file-arrange-body {
-  display: block;
+  color: #666;
+  width: 80px;
+  float: left;
+  padding-left: 10px;
 }
 
 .file-arrange-body {
-  background: white;
-  position: absolute;
-  display: none;
-  width: 100%;
-  font-size: 13px;
+  width: calc(100% - 90px);
+  float: left;
+  margin-left: 10px;
+}
+
+.file-arrange-body .each-arrange {
+  line-height: 30px;
+  margin-top: 5px;
+  width: 100px;
+  float: left;
   text-align: center;
-  line-height: 25px;
-  border: solid 1px #b3d1eb;
-  box-shadow: 0 0 1px #349cf6;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-.each-arrange {
+  margin-right: 15px;
+  border: solid 1px #e0e0e0;
+  border-radius: 5px;
+  color: #5c5c5c;
+  box-shadow: 0 0 1px lightgray;
   cursor: pointer;
-  border-bottom: solid 1px #f5f5f5;
-  color: #555555;
-  transition: all .5s;
 }
 
-.each-arrange:hover {
-  color: #f3f3f3;
-  background: #53afff;
+.file-arrange-body .each-arrange:hover {
+  box-shadow: 0 0 3px lightgray;
 }
 </style>

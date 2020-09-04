@@ -35,7 +35,9 @@ var Request = {
         }
         filterRes(res.data);
       }).catch(function (error) {
-        console.log(error)
+        let str = '请联系技术部，接口发生错误: ' + error;
+        alert(str);
+        console.log(url)
       });
     })
     

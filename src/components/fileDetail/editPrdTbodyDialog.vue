@@ -1,6 +1,6 @@
 <!-- 编辑产品参数表身的对话框 -->
 <template>
-  <el-dialog title="编辑产品参数" :visible="dialogVisible" append-to-body width="45%" :before-close="handleClose" :close-on-press-escape="false" :close-on-click-modal="false">
+  <el-dialog title="编辑产品参数" :visible="dialogVisible" append-to-body width="45%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area" :style="{ 'max-height': areaHeight + 'px' }">
       <div class="each-input" v-for="(item, index) in rowData" :key="index">
         <span class="name">{{ item.colName + ' :' }}</span>

@@ -1,6 +1,6 @@
 <!-- 项目超级管理员设置 -->
 <template>
-  <el-dialog title="设置项目超级员" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-press-escape="false" :close-on-click-modal="false">
+  <el-dialog title="设置项目超级员" :visible="dialogVisible" width="30%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="content">
       <el-button class="new-user-button" type="primary" size="mini" @click="newSupperUser">创建项目管理员</el-button>
       <el-table :data="tableData" style="width: 90%; margin: 0 auto; margin-top: 20px" border :height="tableHeight">

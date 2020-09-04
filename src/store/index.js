@@ -31,6 +31,7 @@ export default new Vuex.Store({
     EDIT_CONTENT: '', // 输入框的内容
     NOW_DATASTATISTICS_ROUTE: '', // 数据统计当前打开的子路由
     NOW_EXAMINATION: '', // 教学模块当前打开的子路由
+    NEW_MESSAGE: {}, // 新的消息
   },
 
   mutations: {

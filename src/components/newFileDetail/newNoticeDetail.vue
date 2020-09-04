@@ -1,6 +1,6 @@
 <!-- 新建知识库文章对话框 -->
 <template>
-  <el-dialog title="编辑知识库文章" :visible="dialogVisible" width="50%" top="8vh" :before-close="handleClose">
+  <el-dialog title="编辑知识库文章" :visible="dialogVisible" width="50%" top="8vh" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <div class="each-input">
         <span class="name">文章名称: </span>

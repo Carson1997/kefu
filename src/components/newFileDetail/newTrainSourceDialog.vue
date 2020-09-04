@@ -1,6 +1,6 @@
 <!-- 创建培训选择素材对话框 -->
 <template>
-  <el-dialog title="选择素材文件" :visible="dialogVisible" top="3vh" :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false" width="80%" :before-close="handleClose">
+  <el-dialog title="选择素材文件" :visible="dialogVisible" top="3vh" :close-on-click-modal="false" width="80%" :before-close="handleClose">
     <div class="input-area" :style="{ height: areaHeight + 'px' }">
       <div class="left">
         <fileFolderComponent @exposeToBusiness="exposeToBusiness" :isCanDrag="fileIsCanDrag" class="file-area" :fileData="fileData" :fileAuth="fileAuth"></fileFolderComponent>
@@ -66,7 +66,9 @@ export default {
   methods: {
 
     // 关闭对话框
-    handleClose: function () {},
+    handleClose: function () {
+      this.$emit('close');
+    },
 
     // 获取所有素材
     getAllSource: function () {
