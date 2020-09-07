@@ -23,8 +23,13 @@
           <!-- <div class="each-file-part path"><span class="file-cursor" @click="switchFile('pre', item)">{{ item.path[item.path.length - 2] }}</span></div> -->
           <div class="each-file-part operation" v-if="fileAuth == true">
             <!-- <el-button type="primary" size="mini" plain @click="editFileName(item)">重命名</el-button> -->
+            <!-- 生成二维码按钮 -->
+            <el-button v-if="item.file_type == 1 && showCode == true" size="small" plain @click="makeCode(item.id)">生成二维码</el-button>
+            <!-- 自定义按钮 -->
             <el-button v-if="customButton && item.file_type == 1" type="primary" size="mini" plain @click="customClick(item, customButton.order)">{{ customButton.name }}</el-button>
+            <!-- 编辑文件 -->
             <el-button class="orange" type="warning" plain size="mini" @click="editFile(item)" v-if="item.file_type == 1 && isCanEdit == true && item.isCanEdit != false">编辑文件</el-button>
+            <!-- 删除 -->
             <el-button class="red" type="danger" plain size="mini" @click="deleteFile(item.id)">删除</el-button>
           </div>
           <div class="clear"></div>
@@ -37,12 +42,12 @@
         <p>该文件夹还没有文件!</p>
       </div>
     </div>
-
-
+    <makeQrCodeDialog @close="closeMakeQrCodeDialog" v-if="makeQrCodeDialogShow" :examId="codeExamId"></makeQrCodeDialog>
   </div>
 </template>
 
 <script>
+import makeQrCodeDialog from '../../components/fileDetail/makeQrCodeDialog';
 export default {
   name: 'fileShowComponent',
 
@@ -72,6 +77,20 @@ export default {
     rankingType: { // 排行类型
       type: String,
       required: false,
+    },
+    showCode: { // 是否显示二维码
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+
+  components: { makeQrCodeDialog },
+
+  data: function () {
+    return {
+      codeExamId: '', // 生成二维码试卷的id
+      makeQrCodeDialogShow: false, // 是否显示生成二维码对话框
     }
   },
 
@@ -120,6 +139,20 @@ export default {
     // 自定义按钮被点击
     customClick: function (data, order) {
       this.$emit('customClick', { order: order, data: data });
+    },
+
+    // 生成二维码
+    makeCode: function (id) {
+      this.codeExamId = id;
+      this.makeQrCodeDialogShow = true;
+      this.$store.commit('changeNowDialog', 'makeQrCodeDialog');
+    },
+
+    // 关闭生成二维码对话框
+    closeMakeQrCodeDialog: function () {
+      this.makeQrCodeDialogShow = false;
+      this.$store.commit('changeNowDialog', '');
+      this.codeExamId = '';
     }
   }
 }

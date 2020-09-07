@@ -2,7 +2,7 @@
 <template>
   <div class="file-folder-component">
     <filePathComponent :fatherNowFileArrange="fatherNowFileArrange" :isFileArrange="isFileArrange" @fileArrange="fileArrange" :fileAuth="fileAuth" @newFolder="newFolder" @searchHandle="searchHandle" @switchFile="switchFile" :filePath="filePath" :fatherSearchInput="fatherSearchInput"></filePathComponent>
-    <fileShowComponent :rankingType="rankingType" @customClick="customClick" :customButton="customButton" @dragend="dragend" @dragstart="dragstart" :isCanDrag="isCanDrag" :isCanEdit="fileIsCanEdit" @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
+    <fileShowComponent :showCode="showCode" :rankingType="rankingType" @customClick="customClick" :customButton="customButton" @dragend="dragend" @dragstart="dragstart" :isCanDrag="isCanDrag" :isCanEdit="fileIsCanEdit" @editFile="editFile" @seeFile="seeFile" :fileAuth="fileAuth" @deleteFile="deleteFile" @newFolder="newFolder" @switchFile="switchFile" :fileShowData="fileShowData"></fileShowComponent>
     <newfileDialog :fileAuth="newFileAuth" :fileGrouping="newFileGroup" @closeHandle="closeHandle" @newFolderApply="newFolderApply" v-if="newfileDialog" :nowFile="fileShowData" :editFileData="editFileData"></newfileDialog>
   </div>
 </template>
@@ -41,6 +41,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    showCode: { // 是否显示二维码
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
 

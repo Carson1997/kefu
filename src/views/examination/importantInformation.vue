@@ -15,6 +15,7 @@
         <div class="each-information" v-for="(item, index) in informationShow" :key="index">
           <div class="each-information-head">
             <h2 class="each-information-title">{{ item.name }}</h2>
+            <el-button type="primary" plain size="mini" class="delete-button" @click="seenImformation(item)">查看已阅成员</el-button>
             <el-button type="warning" plain size="mini" class="delete-button" @click="delImformation(item)">删除</el-button>
             <div class="clear"></div>
           </div>
@@ -29,15 +30,17 @@
       </div>
     </div>
     <newImformationDialog @close="closeNewImformationDialog" :imformationData="imformationData" v-if="newImformationDialogShow" @submit="submitImformation"></newImformationDialog>
+    <seenImformations v-if="seenImformationShow" :tableData="seenImformationData" @close="closeSeenImformationData"></seenImformations>
   </div>
 </template>
 
 <script>
 import newImformationDialog from '../../components/newFileDetail/newImformationDialog';
+import seenImformations from '../../components/fileDetail/seenImformations';
 export default {
   name: 'importantInformation',
 
-  components: { newImformationDialog },
+  components: { newImformationDialog, seenImformations },
 
   data: function () {
     return {
@@ -45,6 +48,8 @@ export default {
       newImformationDialogShow: false, // 是否显示创建重要通知对话框
       imformationData: {}, // 当前编辑的重要通知
       searchInput: '', // 搜索内容
+      seenImformationShow: false, // 是否显已阅人
+      seenImformationData: [], // 已阅读人的数据
     }
   },
 
@@ -129,6 +134,25 @@ export default {
       this.getData();
     },
 
+    // 查看已阅通知的成员
+    seenImformation: function (data) {
+      let url = this.$INTERFACE.SEEN_IMPORTANT_NEWS;
+      let send = { id: data.id };
+      this.$NORMAL_POST(url, send).then(this.seenImformationPromise);
+    },
+
+    // 查看已阅通知的成员  请求后的处理函数
+    seenImformationPromise: function (res) {
+      this.seenImformationShow = true;
+      this.$store.commit('changeNowDialog', 'seenImformations');
+      this.seenImformationData = res.data;
+    },
+
+    // 关闭查看已阅通知的成员
+    closeSeenImformationData: function () {
+      this.seenImformationShow = false;
+      this.$store.commit('changeNowDialog', '');
+    }
   }
 }
 </script>
@@ -188,11 +212,6 @@ export default {
   color: #333;
   width: calc(100% - 200px);
   float: left;
-}
-
-.delete-button {
-  float: right;
-  margin-right: 40px;
 }
 
 .each-information-content {

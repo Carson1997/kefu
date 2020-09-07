@@ -85,6 +85,7 @@ var Interface = {
   ALL_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_list', // 所有的重要通知
   DEL_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_del', // 删除重要通知
   CONFIRM_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_confirm', // 确定查看重要信息
+  SEEN_IMPORTANT_NEWS: REQUEST_URL + '/Content/announcement_user_list', // 查看重要通知已阅的成员
   // ****************** 教学模块 *****************************************
 
   // ****************** bbs *****************************************

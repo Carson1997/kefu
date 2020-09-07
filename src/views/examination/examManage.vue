@@ -1,6 +1,6 @@
 <template>
   <div id="examManage" class="exam-manage">
-    <fileFolderComponent :customButton="customButton" @seeFile="seeFile" @exposeToBusiness="exposeToBusiness" :fileData="fileData" :fileAuth="fileAuth" class="exam-file"></fileFolderComponent>
+    <fileFolderComponent :showCode="true" :customButton="customButton" @seeFile="seeFile" @exposeToBusiness="exposeToBusiness" :fileData="fileData" :fileAuth="fileAuth" class="exam-file"></fileFolderComponent>
     <newExamDialog @newFileHandle="newFileHandle" v-if="newExamDialogShow" :examFileData="examFileData"></newExamDialog>
     <newExamDetail :fatherExamData="newExamDetailData" :examAuth="examAuth" :examId="examId" v-if="newExamDetailShow" @closeExamDetail="closeExamDetail"></newExamDetail>
     <seeScoreDialog @reExam="reExam" @close="closeSeeScoreDialog" @seeExamDetail="seeExamDetail" v-if="seeScoreDialogShow" :tableData="scoreData"></seeScoreDialog>
