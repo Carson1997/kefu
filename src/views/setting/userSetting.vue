@@ -4,8 +4,8 @@
     <!-- 控制区域 -->
     <div class="control-area">
       <el-button type="primary" size="small" @click="newUser">创建用户</el-button>
-
       <el-button type="success" size="small" @click="batchNewUserLis">批量创建用户</el-button>
+      <el-button size="small" @click="download">下载模版</el-button>
       <input type="file" ref="fileUpload" class="none" @change="uploadChange">
       <el-input class="search-input" v-model="searchInput" placeholder="输入项目名称搜索项目" clearable suffix-icon="el-icon-search"></el-input>
     </div>
@@ -200,6 +200,13 @@ export default {
       this.newUserDialog = true;
       this.$store.commit('changeNowDialog', 'newUser');
     },
+
+    // 下载模版
+    download: function () {
+      let url = this.$INTERFACE.ADD_USER_TEMPLATE;
+      console.log(url)
+      window.open(url);
+    }
 
   }
 }

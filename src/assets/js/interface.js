@@ -108,6 +108,11 @@ var Interface = {
   TABLE_DATA: REQUEST_URL + '/Chitu/data_label_customer', // 展示表格详细内容
   TABLE_MERGE_TIME: REQUEST_URL + '/Chitu/binghuo_time', // 表格限制时间
   // ****************** 表格 *****************************************
+
+  // ****************** 模版文件 *****************************************
+  ADD_USER_TEMPLATE: BASE_IP + BASE_PROJECT + '/Public/adduser.xls', // 批量上传用户的模版
+  ADD_SUBJUECT_TEMPLATE: BASE_IP + BASE_PROJECT + '/Public/exam_template.docx', // 批量上传试题的模版
+  // ****************** 模版文件 *****************************************
   
 }
 

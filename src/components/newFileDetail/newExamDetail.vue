@@ -7,7 +7,7 @@
         <span class="now-fraction"><span>当前已分配: </span><span>{{ nowFraction }}分</span></span>
         <el-button class="each-button" type="primary" plain size="small" @click="uploadWord">word文档导入试题</el-button>
         <input type="file" class="none" ref="wordUpload" @change="uploadWordChange">
-        <el-button class="each-button" type="success" plain size="small">下载试题模版</el-button>
+        <el-button class="each-button" type="success" plain size="small" @click="download">下载试题模版</el-button>
         <el-button class="each-button" type="warning" plain size="small" @click="createSubject">创建试题</el-button>
       </div>
       <div class="detail-area"> <!-- 详细区域 -->
@@ -100,7 +100,6 @@ export default {
         let data = { data: this.fatherExamData.list };
         this.getExamContentPromise(data);
       }
-      
     },
 
     // 获取试卷内容  请求后的处理函数
@@ -259,6 +258,13 @@ export default {
       this.$refs.wordUpload.value = '';
       this.$message({ type: 'success', message: res.info });
       this.getExamContent();
+    },
+
+    // 下载试题模版
+    download: function () {
+      let url = this.$INTERFACE.ADD_SUBJUECT_TEMPLATE;
+      console.log(url)
+      window.open(url);
     }
   }
 }
