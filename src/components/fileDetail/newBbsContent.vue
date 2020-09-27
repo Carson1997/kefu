@@ -76,7 +76,6 @@ export default {
   width: 100%;
   border-top: solid 1px #e2e2e2;
   position: relative;
-  max-height: 500px;
   padding: 0 20px 20px 20px;
 }
 

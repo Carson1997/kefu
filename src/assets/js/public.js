@@ -14,6 +14,7 @@ var Pubilc = {
     sessionStorage.status = JSON.stringify(res.data.status); // 权限
     sessionStorage.userId = JSON.stringify(res.data.id); // 用户id
     sessionStorage.prompt = JSON.stringify(res.data.prompt); // 是否已经查看过重要通知
+    sessionStorage.shopContent = JSON.stringify(res.data.shop_content); // 重要通知的内容
   },
 
   // 将session上的信息转换到vuex中存储
@@ -25,6 +26,7 @@ var Pubilc = {
     Vue.$store.commit('changeNormalValue', { name: 'USER_SHOP_ID', value: JSON.parse(sessionStorage.shop_id) }); // 店铺id
     Vue.$store.commit('changeNormalValue', { name: 'USER_ID', value: JSON.parse(sessionStorage.userId) }); // 用户id
     Vue.$store.commit('changeNormalValue', { name: 'PROMPT', value: JSON.parse(sessionStorage.prompt) }); // 是否已经查看过重要通知
+    Vue.$store.commit('changeNormalValue', { name: 'SHOP_CONTENT', value: JSON.parse(sessionStorage.shopContent) }); // 是否已经查看过重要通知
   },
 
   // 清除vuex中存储session的数据
@@ -36,6 +38,7 @@ var Pubilc = {
     Vue.$store.commit('changeNormalValue', { name: 'USER_SHOP_ID', value: '' }); // 店铺id
     Vue.$store.commit('changeNormalValue', { name: 'USER_ID', value: '' }); // 用户id
     Vue.$store.commit('changeNormalValue', { name: 'PROMPT', value: '' }); // prompt
+    Vue.$store.commit('changeNormalValue', { name: 'SHOP_CONTENT', value: '' }); // 重要内容
     Vue.$store.commit('clearAll'); // 所有内容
   },
 
@@ -48,6 +51,7 @@ var Pubilc = {
     sessionStorage.removeItem("status");
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("prompt");
+    sessionStorage.removeItem("shopContent");
     Vue.$JS_COOKIE.set('bhds_token', '');
     Vue.$JS_COOKIE.remove('bhds_token', { path: '/' });
   },

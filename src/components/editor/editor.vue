@@ -26,10 +26,7 @@ export default {
 
   mounted: function () {
     setTimeout(() => {
-      let modal = document.getElementsByClassName('v-modal')[0];
-      modal.style.zIndex = 1000;
-      let wrapper = document.getElementsByClassName('el-dialog__wrapper')[0];
-      wrapper.style.zIndex = 1001;
+      
     }, 500);
   },
 
@@ -39,7 +36,7 @@ export default {
         autoHeightEnabled: false,
         initialFrameHeight: 240,
         initialFrameWidth: '100%',
-        UEDITOR_HOME_URL: '/UEditor/' // /customer_service_support/UEditor/
+        UEDITOR_HOME_URL: '/customer_service_support/UEditor/' // /customer_service_support/UEditor/
       }
     }
   }

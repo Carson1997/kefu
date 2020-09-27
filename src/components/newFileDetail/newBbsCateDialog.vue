@@ -94,7 +94,7 @@ export default {
       let arr = this.cateOptions.filter(item => {
         return item.id == this.fatherCate;
       })
-      let path = arr[0].id == '0' ? this.cateName : arr[0].path + '/' + this.cateName;
+      let path = arr[0] ? arr[0].id == '0' ? this.cateName : arr[0].path + '/' + this.cateName : this.cateName;
       this.$emit('submit', { id: this.cateId, name: this.cateName, fid: this.fatherCate, group_id: this.groupValue, path: path });
     }
 

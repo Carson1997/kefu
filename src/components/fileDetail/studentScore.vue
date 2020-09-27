@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="学生历史考试成绩" :visible="dialogVisible" width="50%" :before-close="handleClose" :close-on-click-modal="false">
+  <el-dialog title="学生历史考试成绩" :visible="dialogVisible" top="7vh" width="50%" :before-close="handleClose" :close-on-click-modal="false">
     <div class="input-area">
       <el-table :data="scoreData" style="width: 100%" border :height="tableHeight">
         <el-table-column prop="name" label="试卷名称" align="center"></el-table-column>
@@ -36,7 +36,7 @@ export default {
 
   data: function () {
     return {
-      tableHeight: 500, // 表格高度
+      tableHeight: document.body.clientHeight - 250, // 表格高度
       examData: [], // 表格数据
       newExamDetailShow: false, // 是否显示考试详细
     }

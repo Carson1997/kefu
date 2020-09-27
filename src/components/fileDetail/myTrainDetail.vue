@@ -31,7 +31,7 @@ export default {
     return {
       areaHeight: document.body.clientHeight - 140,
       trainIndex: 0, // 素材下标
-      baseIp: 'http://192.168.1.23/binghuo_information/', // 服务器ip地址
+      baseIp: 'http://192.168.1.5/binghuo_information/', // 服务器ip地址
       // baseName: 'https://view.officeapps.live.com/op/view.aspx?src=http://service.miniice.cn/binghuo_information/',
       imgSuffix: ['.jpg', '.png', '.jpeg', '.gif'],
       officeSuffix: ['.xls', '.csv', '.xlsx', '.doc', '.ppt', '.docx', '.pptx', '.pdf'],
@@ -48,9 +48,9 @@ export default {
     // 适配当前ip
     arrangeIp: function () {
       if (window.location.host == '192.168.1.20') {
-        this.baseIp = 'http://192.168.1.23/binghuo_information/';
+        this.baseIp = 'http://192.168.1.5/binghuo_information/';
       } else if (window.location.host == '219.128.102.76:808') {
-        this.baseIp = 'http://219.128.102.76:809/binghuo_information/';
+        this.baseIp = 'http://219.128.102.76:818/binghuo_information/';
       }
     },
 
