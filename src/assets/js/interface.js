@@ -8,8 +8,8 @@ const BASE_PROJECT = '/binghuo_information'; // 项目位置
 const API_ADDRESS = '/Backstage'; // api地址
 const REQUEST_URL = BASE_IP + BASE_PROJECT + API_ADDRESS;
 let OUT_SERVER = 'http://192.168.1.5';
-if (window.location.host == '219.128.102.76:808') {
-  OUT_SERVER = 'http://219.128.102.76:818';
+if (window.location.host == '183.239.34.128:808') {
+  OUT_SERVER = 'http://183.239.34.128:818';
 }
 
 var Interface = {

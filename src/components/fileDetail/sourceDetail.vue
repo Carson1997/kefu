@@ -48,8 +48,8 @@ export default {
     arrangeIp: function () {
       if (window.location.host == '192.168.1.20') {
         this.baseIp = 'http://192.168.1.5/binghuo_information/';
-      } else if (window.location.host == '219.128.102.76:808') {
-        this.baseIp = 'http://219.128.102.76:818/binghuo_information/';
+      } else if (window.location.host == '183.239.34.128:808') {
+        this.baseIp = 'http://183.239.34.128:818/binghuo_information/';
       }
     },
 

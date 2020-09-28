@@ -38,7 +38,7 @@ export default {
     // 生成二维码
     makeCode: function () {
       let _this = this;
-      let address = 'http://219.128.102.76:808/customer_service_support_phone?examId=' + this.examId;
+      let address = 'http://183.239.34.128:808/customer_service_support_phone?examId=' + this.examId;
       console.log(address)
       setTimeout(() => {
         var qrcode = new QRCode(_this.$refs.qrCodeUrl, {
