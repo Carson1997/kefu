@@ -1,6 +1,6 @@
 <!-- 重要提示 -->
 <template>
-  <el-dialog title="重要提示" :visible="dialogVisible" width="50%" :show-close="false" :before-close="handleClose" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog class="dialog" title="重要提示" :visible="dialogVisible" width="50%" :show-close="false" :before-close="handleClose" :close-on-click-modal="false" :close-on-press-escape="false">
     <div class="prompt-see-area" v-html="shopContent">
       <!-- <p class="head">使用声明</p>
       <p class="left-fir">  1、前言</p>
@@ -71,7 +71,7 @@ export default {
   border-top: solid 1px #f3f3f3;
 }
 
-.center {
+.dialog .center {
   width: 100%;
   border-top: solid 1px #f3f3f3;
   text-align: center;
