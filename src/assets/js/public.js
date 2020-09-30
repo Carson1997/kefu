@@ -73,36 +73,68 @@ var Pubilc = {
 
   // 将数组递归成父子级别的形式
   changeArrToHierarchy: function (data) {
+    // data = JSON.parse(JSON.stringify(data));
+    // let returnObj = {}
+		// let parents = data.filter(value => {
+		// 	value['label'] = value['name'];
+    //   value['value'] = value['id'];
+		// 	return value.fid == 0;
+		// })
+		// let children = data.filter(value => {
+    //   value['path'] = '全部文件' + value['path'];
+		// 	return value.fid != 0;
+		// })
+		// let find = (parents, children) => {
+		// 	parents.forEach(parent => {
+		// 		children.forEach((current, index) => {
+		// 			if (current.fid === parent.id) {
+		// 				let temp = JSON.parse(JSON.stringify(children));
+		// 				temp.splice(index, 1);
+    //         find([current], temp);
+    //         let attr = current['name'];
+    //         typeof parent.children !== 'undefined' ? '' : parent.children = {};
+    //         parent.children[attr] = current;
+		// 			}
+		// 		});
+		// 	})
+		// }
+    // find(parents, children);
+    // for (let i in parents) {
+    //   returnObj[parents[i]['name']] = parents[i];
+    // }
+    // return returnObj;
     data = JSON.parse(JSON.stringify(data));
-    let returnObj = {}
-		let parents = data.filter(value => {
-			value['label'] = value['name'];
-      value['value'] = value['id'];
-			return value.fid == 0;
-		})
-		let children = data.filter(value => {
-      value['path'] = '全部文件' + value['path'];
-			return value.fid != 0;
-		})
-		let find = (parents, children) => {
-			parents.forEach(parent => {
-				children.forEach((current, index) => {
-					if (current.fid === parent.id) {
-						let temp = JSON.parse(JSON.stringify(children));
-						temp.splice(index, 1);
-            find([current], temp);
-            let attr = current['name'];
-            typeof parent.children !== 'undefined' ? '' : parent.children = {};
-            parent.children[attr] = current;
-					}
-				});
-			})
-		}
-    find(parents, children);
-    for (let i in parents) {
-      returnObj[parents[i]['name']] = parents[i];
+    let fileObj = {}; // 文件数据
+    for (let i in data) {
+      data[i]['label'] = data[i]['name'];
+      data[i]['value'] = data[i]['id'];
+      data[i]['path'] = '全部文件' + data[i]['path'];
+      let level = data[i].path.split('/');
+      level.shift();
+      let first = level.shift();
+      if (fileObj[first] == undefined) {
+        fileObj[first] = {};
+      }
+      if (level.length == 0) {
+        fileObj[first] = JSON.parse(JSON.stringify(data[i]))
+      } else {
+        if (fileObj[first]['children'] == undefined) {
+          fileObj[first]['children'] = {};
+        }
+        let obj = fileObj[first];
+        for (let i = 0; i < level.length - 1; i++) {
+          if (obj['children'][level[i]] == undefined) {
+            obj['children'][level[i]] = { children: {} };
+          }
+          obj = obj['children'][level[i]];
+        }
+        if (obj['children'] == undefined) {
+          obj['children'] = {};
+        }
+        obj['children'][level[level.length - 1]] = JSON.parse(JSON.stringify(data[i]));
+      }
     }
-		return returnObj;
+    return fileObj;
   },
 
   // 将数组递归成父子级别的形式  普通模式
